@@ -1,14 +1,24 @@
 import requests
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-import re
-import lxml
 import pandas as pd
 from bs4 import BeautifulSoup as bs
-from datetime import datetime
+from kbo_data.get.util import change_name_into_id
 
 # month는 2자리 수로 맞춰야 한다.
 def get_schedule(year, month):
+    """각 월마다 경기 스케쥴을 가져오는 함수
+    예시) 
+    > get_ schedule(year, month)
+        status year month day away  home
+        0	OK	2001  04	5	LG	   SK
+        1	OK	2001  04	5	KIA	   두산
+        2	OK	2001  04	5	롯데	현대
+        3	OK	2001  04	5	한화    삼성
+    ...	...	...	...	...	...	...
+        82	OK  2001  04	28  삼성	현대
+        83	OK  2001  04	28	LG	   한화
+    """
     with requests.Session() as s:
         r = s.get('https://www.koreabaseball.com/ws/Schedule.asmx/GetMonthSchedule', verify=False)
         data = {
@@ -33,3 +43,4 @@ def get_schedule(year, month):
                 pass
         result = pd.DataFrame(data,columns=["status","year","month","day","away","home"])
     return result
+
