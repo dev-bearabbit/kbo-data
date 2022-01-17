@@ -5,6 +5,12 @@ import pandas as pd
 from bs4 import BeautifulSoup as bs
 from kbo_data.get.util import change_name_into_id
 
+def transform_date(year,month,day):
+    if len(day) == 1:
+        return str(year+month+"0"+day)
+    else:
+        return str(year+month+day)
+
 # month는 2자리 수로 맞춰야 한다.
 def get_schedule(year, month):
     """각 월마다 경기 스케쥴을 가져오는 함수
@@ -34,13 +40,25 @@ def get_schedule(year, month):
         for lis in lists:
             if len(lis.text.split()) == 5:
                 temp= lis.text.split()
-                data.append(["OK",year,month,day,temp[0],temp[-1]])
+                data.append(["OK",transform_date(year,month,day),temp[0],temp[-1]])
             elif lis["class"]== ['\\"dayNum\\"']:
                 day = lis.string
             elif lis["class"]== ['rainCancel']:
-                data.append(["rain",year,month,day,temp[0],temp[2]])
+                data.append(["rain",transform_date(year,month,day),temp[0],temp[2]])
             else:
                 pass
-        result = pd.DataFrame(data,columns=["status","year","month","day","away","home"])
+        result = pd.DataFrame(data,columns=["status","date","away","home"])
     return result
 
+def schedule_modify():
+    """
+    ex) schedule_modify()
+        date	away	home	gameid
+    0	20210501	SK	OB	SKOB0
+    1	20210501	HH	LT	HHLT0
+    2	20210501	LG	SS	LGSS0
+    3	20210501	WO	NC	WONC0
+    4	20210501	HT	KT	HTKT0
+    ...	...	...	...	...
+    108	20210530	WO	LG	WOLG0
+    """
