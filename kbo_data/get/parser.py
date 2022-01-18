@@ -1,18 +1,6 @@
 import pandas as pd
 
 
-def scoreboard(tables, teams):
-    temp_df_0 = pd.read_html(str(tables[0]))[0]
-    temp_df_0 = temp_df_0.rename(columns={"Unnamed: 0": "승패"})
-    temp_df_1 = pd.read_html(str(tables[1]))[0]
-    temp_df_2 = pd.read_html(str(tables[2]))[0]
-    temp_teams_df = pd.DataFrame({"팀": teams})
-    temp_total = pd.concat(
-        [temp_teams_df, temp_df_0["승패"], temp_df_1, temp_df_2], axis=1
-    )
-    return temp_total
-
-
 def looking_for_team_names(temp_teams):
     """ 모은 HTML soup에서 시합한 두 팀명을 뽑는 함수
 
@@ -46,6 +34,16 @@ def looking_for_team_names(temp_teams):
 
     return (temp_team_list[0], temp_team_list[1])
 
+def scoreboard(tables, teams):
+    temp_df_0 = pd.read_html(str(tables[0]))[0]
+    temp_df_0 = temp_df_0.rename(columns={"Unnamed: 0": "승패"})
+    temp_df_1 = pd.read_html(str(tables[1]))[0]
+    temp_df_2 = pd.read_html(str(tables[2]))[0]
+    temp_teams_df = pd.DataFrame({"팀": teams})
+    temp_total = pd.concat(
+        [temp_teams_df, temp_df_0["승패"], temp_df_1, temp_df_2], axis=1
+    )
+    return temp_total
 
 def etc_info(tables, record_etc):
     record = {}

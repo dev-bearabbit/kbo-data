@@ -44,14 +44,16 @@ def get_schedule(year, month):
             elif lis["class"]== ['\\"dayNum\\"']:
                 day = lis.string
             elif lis["class"]== ['rainCancel']:
-                data.append(["rain",transform_date(year,month,day),change_name_to_id(temp[0],year),change_name_to_id(temp[-1],year)])
+                data.append(["rain",transform_date(year,month,day),change_name_to_id(temp[0],year),change_name_to_id(temp[2],year)])
             else:
                 pass
         result = pd.DataFrame(data,columns=["status","date","away","home"])
     return result
 
 def add_gameid():
-    """
+    """gameid를 생성한다.  gameid는 (away+home+dbheader)로 구성된 문자열이다.
+       더블헤더를 확인하는 기준은 다음과 같다.  더블헤더 x: 0 / 더블헤더 o: 1(첫번째 경기), 2(두번째 경기)
+
     ex) add_gameid()
         date	away	home	gameid
     0	20210501	SK	OB	SKOB0
