@@ -1,4 +1,4 @@
-def change_name_into_id(team_name, year):
+def change_name_to_id(team_name, year):
     """팀 이름을 팀 ID로 바꾸는 함수
 
     2021년 SSG가 창단했다. 그래서 팀명이 SK에서 SSG로 변경되었다.
