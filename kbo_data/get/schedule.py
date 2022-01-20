@@ -1,3 +1,14 @@
+"""한달 단위로 KBO 경기 정보를 가져오는 모듈
+    > get_ schedule(year, month)
+    status	date	  away	home  dbheader	gameid
+    0	OK	20200602	SS	LG	   0	     SSLG0
+    1	OK	20200602	SK	NC	   0	     SKNC0
+    2	OK	20200602	OB	KT	   0	     OBKT0
+        ...	...	...	...	...	...	...
+    126	OK	20200630	KT	LG	   0	     KTLG0
+    127	OK	20200630	SK	SS	   0	     SKSS0
+"""
+
 import re
 import requests
 import urllib3
@@ -11,14 +22,13 @@ def get_schedule(year, month):
     """각 월마다 경기 스케쥴을 가져오는 함수
     예시) 
     > get_ schedule(year, month)
-        status year month day away  home
-        0	OK	2001  04	5	LG	   SK
-        1	OK	2001  04	5	KIA	   두산
-        2	OK	2001  04	5	롯데	현대
-        3	OK	2001  04	5	한화    삼성
-    ...	...	...	...	...	...	...
-        82	OK  2001  04	28  삼성	현대
-        83	OK  2001  04	28	LG	   한화
+    status	date	  away	home  dbheader	gameid
+    0	OK	20200602	SS	LG	   0	     SSLG0
+    1	OK	20200602	SK	NC	   0	     SKNC0
+    2	OK	20200602	OB	KT	   0	     OBKT0
+        ...	...	...	...	...	...	...
+    126	OK	20200630	KT	LG	   0	     KTLG0
+    127	OK	20200630	SK	SS	   0	     SKSS0
     """
     with requests.Session() as s:
         r = s.get('https://www.koreabaseball.com/ws/Schedule.asmx/GetMonthSchedule', verify=False)
@@ -55,8 +65,6 @@ def add_gameid(result):
     0	OK	20200602	SS	LG	   0	     SSLG0
     1	OK	20200602	SK	NC	   0	     SKNC0
     2	OK	20200602	OB	KT	   0	     OBKT0
-    3	OK	20200602	LT	HT	   0	     LTHT0
-    4	OK	20200602	WO	HH	   0	     WOHH0
         ...	...	...	...	...	...	...
     126	OK	20200630	KT	LG	   0	     KTLG0
     127	OK	20200630	SK	SS	   0	     SKSS0
