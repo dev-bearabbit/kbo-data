@@ -50,17 +50,38 @@ def get_schedule(year, month):
         result = pd.DataFrame(data,columns=["status","date","away","home"])
     return result
 
-def add_gameid():
+def add_gameid(result):
     """gameid를 생성한다.  gameid는 (away+home+dbheader)로 구성된 문자열이다.
        더블헤더를 확인하는 기준은 다음과 같다.  더블헤더 x: 0 / 더블헤더 o: 1(첫번째 경기), 2(두번째 경기)
 
-    ex) add_gameid()
-        date	away	home	gameid
-    0	20210501	SK	OB	SKOB0
-    1	20210501	HH	LT	HHLT0
-    2	20210501	LG	SS	LGSS0
-    3	20210501	WO	NC	WONC0
-    4	20210501	HT	KT	HTKT0
-    ...	...	...	...	...
-    108	20210530	WO	LG	WOLG0
+    ex) add_gameid(data)
+    status	date	  away	home  dbheader	gameid
+    0	OK	20200602	SS	LG	   0	     SSLG0
+    1	OK	20200602	SK	NC	   0	     SKNC0
+    2	OK	20200602	OB	KT	   0	     OBKT0
+    3	OK	20200602	LT	HT	   0	     LTHT0
+    4	OK	20200602	WO	HH	   0	     WOHH0
+        ...	...	...	...	...	...	...
+    126	OK	20200630	KT	LG	   0	     KTLG0
+    127	OK	20200630	SK	SS	   0	     SKSS0
     """
+    # 더블헤더 여부 저장할 열 생성
+    result["dbheader"] = 0
+    # 날짜 별 경기 횟수 조회
+    temp = result.groupby(["date","away","home"],as_index=False).count()
+    # 그 중 더블헤더 경기만 추출
+    dbheader = temp.loc[temp["status"] == 2]
+    # 더블헤더 경기인 경우 1, 2 로 입력
+    for idx, dbhd in dbheader.iterrows():
+        bh = dbhd["date"]+dbhd["away"]+dbhd["home"]
+        count = 1
+        for jdx, data in result.iterrows():
+            dt = data["date"]+data["away"]+data["home"]
+            if dt == bh:
+                result.iat[jdx, 4] = count
+                count += 1
+    # 더블헤더와 팀 정보로 gameid 생성
+    result["gameid"] = result[["away","home","dbheader"]].apply(lambda row: ''.join(row.values.astype(str)), axis=1)
+
+    return result
+
