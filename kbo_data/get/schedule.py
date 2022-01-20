@@ -8,8 +8,6 @@
     126	OK	20200630	KT	LG	   0	     KTLG0
     127	OK	20200630	SK	SS	   0	     SKSS0
 """
-
-import re
 import requests
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
