@@ -1,15 +1,10 @@
+import re
 import requests
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import pandas as pd
 from bs4 import BeautifulSoup as bs
 from kbo_data.get.util import change_name_to_id
-
-def transform_date(year,month,day):
-    if len(day) == 1:
-        return str(year+month+"0"+day)
-    else:
-        return str(year+month+day)
 
 # month는 2자리 수로 맞춰야 한다.
 def get_schedule(year, month):
@@ -48,6 +43,7 @@ def get_schedule(year, month):
             else:
                 pass
         result = pd.DataFrame(data,columns=["status","date","away","home"])
+        result = add_gameid(result)
     return result
 
 def add_gameid(result):
@@ -85,3 +81,8 @@ def add_gameid(result):
 
     return result
 
+def transform_date(year,month,day):
+    if len(day) == 1:
+        return str(year+month+"0"+day)
+    else:
+        return str(year+month+day)
