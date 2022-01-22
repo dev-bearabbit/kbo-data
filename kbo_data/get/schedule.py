@@ -1,71 +1,100 @@
-"""한달 단위로 KBO 경기 정보를 가져오는 모듈
-    > get_ schedule(year, month)
-    status	date	  away	home  dbheader	gameid
-    0	OK	20200602	SS	LG	   0	     SSLG0
-    1	OK	20200602	SK	NC	   0	     SKNC0
-    2	OK	20200602	OB	KT	   0	     OBKT0
-        ...	...	...	...	...	...	...
-    126	OK	20200630	KT	LG	   0	     KTLG0
-    127	OK	20200630	SK	SS	   0	     SKSS0
-"""
-import requests
-import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+from datetime import date
+import os
+import configparser
+from bs4 import BeautifulSoup
+from dateutil.relativedelta import relativedelta
+from selenium import webdriver
 import pandas as pd
-from bs4 import BeautifulSoup as bs
 from kbo_data.get.util import change_name_to_id
 
-# month는 2자리 수로 맞춰야 한다.
-def get_schedule(year, month):
-    """각 월마다 경기 스케쥴을 가져오는 함수
-    예시) 
-    > get_ schedule(year, month)
-    status	date	  away	home  dbheader	gameid
-    0	OK	20200602	SS	LG	   0	     SSLG0
-    1	OK	20200602	SK	NC	   0	     SKNC0
-    2	OK	20200602	OB	KT	   0	     OBKT0
-        ...	...	...	...	...	...	...
-    126	OK	20200630	KT	LG	   0	     KTLG0
-    127	OK	20200630	SK	SS	   0	     SKSS0
+# 설정파일을 읽어오기 위해 configparser를 사용
+config = configparser.ConfigParser()
+# 필요한 변수 가져오기
+config.read(os.path.join(os.path.dirname('__file__'),"kbo_data","config","config.ini"), encoding="utf-8")
+info_url = config["DEFAULT"]["Game_info_URL"]
+
+def get_schedule(start_date, end_date, Driver_path, only_month = False):
+    """실제 사용하는 함수: 필요한만큼의 경기 스케쥴을 가져온다.
+
+    ex) get_schedule("202104","202105",'chromedriver')
+
+        status      date home away  dbheader gameid
+    0     경기취소  20210403   HH   KT         0  HHKT0
+    1     경기취소  20210403   HT   OB         0  HTOB0
+    ..     ...       ...  ...  ...       ...    ...
+    259     종료  20210530   KT   HT         0  KTHT0
+    260     종료  20210530   NC   LT         0  NCLT0
     """
-    with requests.Session() as s:
-        r = s.get('https://www.koreabaseball.com/ws/Schedule.asmx/GetMonthSchedule', verify=False)
-        data = {
-            'leId': '1'
-            ,'srIdList': ''
-            , 'seasonId': year
-            , 'gameMonth': month
-        }
-        r = requests.post('https://www.koreabaseball.com/ws/Schedule.asmx/GetMonthSchedule',  data=data)
-        soup = bs(r.content, 'lxml')
-        lists = soup.find_all("li")
-        data=[]
-        for lis in lists:
-            temp= lis.text.split()
-            if len(temp) == 5:
-                data.append(["OK",transform_date(year,month,day),change_name_to_id(temp[0],year),change_name_to_id(temp[-1],year)])
-            elif lis["class"]== ['\\"dayNum\\"']:
-                day = lis.string
-            elif lis["class"]== ['rainCancel']:
-                data.append(["rain",transform_date(year,month,day),change_name_to_id(temp[0],year),change_name_to_id(temp[2],year)])
-            else:
+    
+    if len(start_date+end_date) != 12 or (start_date+end_date).isdigit() == False:
+        return print("ERROR: please check start date or end date")
+    
+    schedule = pd.DataFrame()
+    st_date = date(int(start_date[:4]),int(start_date[4:7]),1)
+    ed_date = date(int(end_date[:4]),int(end_date[4:7]),2)
+    
+    if st_date >= ed_date: return print("ERROR: start date is later than the end date.")
+    
+    if only_month == True:
+        if st_date.month != ed_date.month: return print("ERROR: start and end months are different")
+        while st_date.year <= ed_date.year:
+            data = get_monthly_schedule(st_date.year,st_date.month,Driver_path)
+            schedule = pd.concat([schedule,data],axis=0,ignore_index=True)
+            st_date += relativedelta(years=1)
+    else:
+        while st_date < ed_date:
+            data = get_monthly_schedule(st_date.year,st_date.month,Driver_path)
+            schedule = pd.concat([schedule,data],axis=0,ignore_index=True)
+            st_date += relativedelta(months=1)
+    return schedule
+
+def get_monthly_schedule(year, month, Driver_path):
+
+    try:
+        # 스케쥴 데이터 스크래핑
+        options = webdriver.ChromeOptions()
+        options.add_argument("headless")
+        options.add_argument("window-size=1920x1080")
+        options.add_argument("disable-gpu")
+        driver = webdriver.Chrome(Driver_path, options=options)
+        url = info_url + str(year)+str(month).zfill(2)
+        driver.get(url)
+        driver.implicitly_wait(5)
+        # 스크래핑 된 데이터 정리
+        soup = BeautifulSoup(driver.page_source, "lxml")
+        table = soup.find('tbody',{"id":"scheduleList"})
+        result = []
+        result = []
+        for tr in table.find_all("tr"):
+            day = tr['data-date']
+            teams = tr.find("td",{"class":"td_team"})
+            if teams == None:
                 pass
-        result = pd.DataFrame(data,columns=["status","date","away","home"])
+            else:
+                status = tr.find("span",{"class":"state_game"}).text
+                result.append(transform_info(status,day,teams))
+        result = pd.DataFrame(result, columns=["status","date","home","away"])
         result = add_gameid(result)
+    except Exception as e:
+        print()
+    
     return result
+
+def transform_info(status, day, teams):
+    """팀 정보를 가져오는 함수. HTML에 있는 요소들을 찾아서 하나의 리스트로 업로드한다.
+        ex) html 코드 -> []
+    """
+    home = teams.find("div",{"class":"info_team team_home"})
+    home_team = home.find("span",{"class":"txt_team"}).text
+    away = teams.find("div",{"class":"info_team team_away"})
+    away_team = away.find("span",{"class":"txt_team"}).text
+    return [status, day, change_name_to_id(home_team,day[:4]), change_name_to_id(away_team,day[:4])]
+
 
 def add_gameid(result):
     """gameid를 생성한다.  gameid는 (away+home+dbheader)로 구성된 문자열이다.
        더블헤더를 확인하는 기준은 다음과 같다.  더블헤더 x: 0 / 더블헤더 o: 1(첫번째 경기), 2(두번째 경기)
-
-    ex) add_gameid(data)
-    status	date	  away	home  dbheader	gameid
-    0	OK	20200602	SS	LG	   0	     SSLG0
-    1	OK	20200602	SK	NC	   0	     SKNC0
-    2	OK	20200602	OB	KT	   0	     OBKT0
-        ...	...	...	...	...	...	...
-    126	OK	20200630	KT	LG	   0	     KTLG0
-    127	OK	20200630	SK	SS	   0	     SKSS0
     """
     # 더블헤더 여부 저장할 열 생성
     result["dbheader"] = 0
@@ -83,12 +112,6 @@ def add_gameid(result):
                 result.iat[jdx, 4] = count
                 count += 1
     # 더블헤더와 팀 정보로 gameid 생성
-    result["gameid"] = result[["away","home","dbheader"]].apply(lambda row: ''.join(row.values.astype(str)), axis=1)
+    result["gameid"] = result[["home","away","dbheader"]].apply(lambda row: ''.join(row.values.astype(str)), axis=1)
 
     return result
-
-def transform_date(year,month,day):
-    if len(day) == 1:
-        return str(year+month+"0"+day)
-    else:
-        return str(year+month+day)

@@ -1,10 +1,5 @@
 """KBO 정규 시즌 게임 자료를 가져와서 사용할 수 있도록 가공하기 쉽게 수정해주는 모듈 
-
-이 모듈에는 `getting_page()`, `single_game()`, 함수 2개를 가지고 있다.
-이 함수 중 single_game()이 메인 함수이다. 이 함수는 `getting_page()`을 이용하여
-게임 자료를 가져와 사용하기 쉽게 적절하게 정리해 준다.
 """
-
 import ast
 import os
 import configparser
@@ -14,7 +9,7 @@ from bs4 import BeautifulSoup
 
 from kbo_data.get.parser import scoreboard, etc_info, looking_for_team_names
 from kbo_data.get.parser import away_batter, home_batter, away_pitcher, home_pitcher
-
+from kbo_data.get.schedule import get_schedule
 
 # 설정파일을 읽어오기 위해 configparser를 사용합니다.
 config = configparser.ConfigParser()
@@ -23,7 +18,7 @@ config.read(os.path.join(os.path.dirname('__file__'),"kbo_data","config","config
 # 설정파일에 들어있는 KBO url을 가져 옵니다.
 url = config["DEFAULT"]["KBO_URL"]
 
-def getting_page(gameDate, gameld, Driver):
+def get_page(gameDate, gameId, Driver_path):
     """
     단일 게임 페이지의 내용을 chromium을 이용해 가져오는 함수
 
@@ -37,7 +32,7 @@ def getting_page(gameDate, gameld, Driver):
 
     Example
     -------
-        >>> temp_page=getting_page("20181010","KTLT1")
+        >>> temp_page=get_page("20181010","KTLT1")
 
     Parameters
     ----------
@@ -69,10 +64,10 @@ def getting_page(gameDate, gameld, Driver):
         options.add_argument("disable-gpu")
         # 혹은 options.add_argument("--disable-gpu")
 
-        driver = webdriver.Chrome(Driver, chrome_options=options)
+        driver = webdriver.Chrome(Driver_path, chrome_options=options)
         # 주소 보기
         # 20180801&amp;gameId=20180801WOSK0&amp;section=REVIEW
-        temp_url = url + gameDate + "&amp;gameId=" + gameDate + gameld + "&amp;section=REVIEW"
+        temp_url = url + gameDate + "&amp;gameId=" + gameDate + gameId + "&amp;section=REVIEW"
         driver.get(temp_url)
         driver.implicitly_wait(5)
         soup = BeautifulSoup(driver.page_source, "lxml")
@@ -89,18 +84,16 @@ def getting_page(gameDate, gameld, Driver):
             "record_etc": record_etc,
             "teams": teams,
             "date": gameDate,
-            "id": gameld,
+            "id": gameId,
         }
 
     except Exception as e:
-        print(e)
+        print()
 
     finally:
-        print("finally...")
         driver.quit()
 
-
-def single_game(date, gameld):
+def single_game(date, gameId, Driver_path):
     """
     다운받은 단일 게임 자료를 사용하기 쉽게 원본을 보존하며 적절하게 정리하는 함수
 
@@ -140,9 +133,8 @@ def single_game(date, gameld):
         - 'home_pitcher'
     """
 
-    temp_page = getting_page(date, gameld)
+    temp_page = get_page(date, gameId, Driver_path)
     temp_scoreboard = scoreboard(temp_page["tables"], temp_page["teams"])
-    print(temp_scoreboard)
 
     temp_all = {
         "scoreboard": ast.literal_eval(temp_scoreboard.to_json(orient="records"))
@@ -189,4 +181,3 @@ def single_game(date, gameld):
 
     temp_name = temp_page["date"] + "_" + temp_page["id"]
     return {"id": temp_name, "contents": temp_all}
-
