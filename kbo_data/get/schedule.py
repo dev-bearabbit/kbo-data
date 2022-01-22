@@ -2,6 +2,7 @@
 from datetime import date
 import os
 import configparser
+from tqdm import tqdm
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 from selenium import webdriver
@@ -14,8 +15,9 @@ config = configparser.ConfigParser()
 config.read(os.path.join(os.path.dirname('__file__'),"kbo_data","config","config.ini"), encoding="utf-8")
 info_url = config["DEFAULT"]["Game_info_URL"]
 
+
 def get_schedule(start_date, end_date, Driver_path, only_month = False):
-    """실제 사용하는 함수: 필요한만큼의 경기 스케쥴을 가져온다.
+    """실제 사용하는 함수: 2008년부터 달 단위로 요청된 경기 스케쥴을 가져온다.
 
     ex) get_schedule("202104","202105",'chromedriver')
 
@@ -29,25 +31,35 @@ def get_schedule(start_date, end_date, Driver_path, only_month = False):
     
     if len(start_date+end_date) != 12 or (start_date+end_date).isdigit() == False:
         return print("ERROR: please check start date or end date")
-    
     schedule = pd.DataFrame()
     st_date = date(int(start_date[:4]),int(start_date[4:7]),1)
     ed_date = date(int(end_date[:4]),int(end_date[4:7]),2)
     
+    if st_date.year < 2008: return print("ERROR: This library only provides data since 2008.")
     if st_date >= ed_date: return print("ERROR: start date is later than the end date.")
+    if ed_date > date.today(): return print("ERROR: The end date is later than now.")
+    
+    delta = relativedelta(ed_date, st_date)
     
     if only_month == True:
         if st_date.month != ed_date.month: return print("ERROR: start and end months are different")
+        pbar = tqdm(desc="in progress",total = delta.years+1)
         while st_date.year <= ed_date.year:
             data = get_monthly_schedule(st_date.year,st_date.month,Driver_path)
             schedule = pd.concat([schedule,data],axis=0,ignore_index=True)
             st_date += relativedelta(years=1)
+            pbar.update(1)
+        pbar.close()
     else:
+        pbar = tqdm(desc="in progress",total = delta.years*12 + delta.months+1)
         while st_date < ed_date:
             data = get_monthly_schedule(st_date.year,st_date.month,Driver_path)
             schedule = pd.concat([schedule,data],axis=0,ignore_index=True)
             st_date += relativedelta(months=1)
+            pbar.update(1)
+        pbar.close()
     return schedule
+
 
 def get_monthly_schedule(year, month, Driver_path):
 
@@ -65,21 +77,27 @@ def get_monthly_schedule(year, month, Driver_path):
         soup = BeautifulSoup(driver.page_source, "lxml")
         table = soup.find('tbody',{"id":"scheduleList"})
         result = []
-        result = []
         for tr in table.find_all("tr"):
+            # 경기가 없는 경우에도 저장 X
+            if 'tr_empty' in tr['class']:
+                continue
+            # 경기가 올스타전(드림 vs.나눔)인 경우 저장 X
+            if tr.find("td",{"class":"td_sort"}).text == '올스타전':
+                continue
+            status = tr.find("span",{"class":"state_game"}).text
+            # 업데이트 안된 경기들도 저장 X
+            if status == '경기전':
+                continue
             day = tr['data-date']
             teams = tr.find("td",{"class":"td_team"})
-            if teams == None:
-                pass
-            else:
-                status = tr.find("span",{"class":"state_game"}).text
-                result.append(transform_info(status,day,teams))
+                
+            result.append(transform_info(status,day,teams))
         result = pd.DataFrame(result, columns=["status","date","home","away"])
         result = add_gameid(result)
     except Exception as e:
         print()
-    
     return result
+
 
 def transform_info(status, day, teams):
     """팀 정보를 가져오는 함수. HTML에 있는 요소들을 찾아서 하나의 리스트로 업로드한다.
