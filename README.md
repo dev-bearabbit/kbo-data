@@ -24,8 +24,6 @@ chrome driver는
 
 ```python
     from kbo_data.get.data import get_data
-    # 2021년 4월부터 2021년 5월까지의 KBO 경기 스케쥴을 가져옵니다.
+    # KBO 경기정보를 dict 형식으로 가져옵니다.
     data = get_data(schedule, chrome_driver)
-    # 2020년, 2021년 4월의 KBO 경기 스케쥴을 가져옵니다.    
-    data = get_schedule("202004","202104",chrome_driver, only_month=True)
 ```
