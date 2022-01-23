@@ -7,12 +7,12 @@ from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 from selenium import webdriver
 import pandas as pd
-from kbo_data.get.util import change_name_to_id
+from kbodata.get.util import change_name_to_id
 
 # 설정파일을 읽어오기 위해 configparser를 사용
 config = configparser.ConfigParser()
 # 필요한 변수 가져오기
-config.read(os.path.join(os.path.dirname('__file__'),"kbo_data","config","config.ini"), encoding="utf-8")
+config.read(os.path.join(os.path.dirname('__file__'),"kbodata","config","config.ini"), encoding="utf-8")
 info_url = config["DEFAULT"]["Game_info_URL"]
 
 
