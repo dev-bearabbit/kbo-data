@@ -3,7 +3,7 @@
 from tqdm import tqdm
 from kbodata.parser.page import parsing_single_game
 
-def get_data(schedule, Driver_path):
+def get_game_data(schedule, Driver_path):
     """스케쥴에 해당하는 데이터를 가져오는 함수
     데이터들을 스크래핑하여 list로 반환한다.
     """

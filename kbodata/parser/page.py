@@ -10,7 +10,8 @@ from kbodata.parser.html import away_batter, home_batter, away_pitcher, home_pit
 # 설정파일을 읽어오기 위해 configparser를 사용
 config = configparser.ConfigParser()
 # 필요한 변수 가져오기
-config.read(os.path.join(os.path.dirname('__file__'),"kbodata","config","config.ini"), encoding="utf-8")
+config.read(os.path.join(os.path.dirname(__file__),"config.ini"), encoding="utf-8")
+print(os.path.join(os.path.dirname(__file__),"config.ini"))
 url = config["DEFAULT"]["KBO_URL"]
 
 

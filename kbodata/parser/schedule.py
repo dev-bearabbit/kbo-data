@@ -1,4 +1,3 @@
-
 import os
 import configparser
 from bs4 import BeautifulSoup
@@ -9,7 +8,7 @@ from kbodata.parser.util import change_name_to_id
 # 설정파일을 읽어오기 위해 configparser를 사용
 config = configparser.ConfigParser()
 # 필요한 변수 가져오기
-config.read(os.path.join(os.path.dirname('__file__'),"kbodata","config","config.ini"), encoding="utf-8")
+config.read(os.path.join(os.path.dirname(__file__),"config.ini"), encoding="utf-8")
 info_url = config["DEFAULT"]["Game_info_URL"]
 
 

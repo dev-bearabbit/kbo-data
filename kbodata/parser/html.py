@@ -3,22 +3,17 @@ import pandas as pd
 
 def looking_for_team_names(temp_teams):
     """ 모은 HTML soup에서 시합한 두 팀명을 뽑는 함수
-
     다음과 같은 HTML soup에서 "한화"만 뽑아서 팀명을 찾는다.
-
     실제로는 아래와 같은 것이 두 팀에서 각 각 타자, 투수 총 네 번 나온다.
     거기서 두 팀만 뽑으면 된다. 또한 아래처럼 "한화 이글스 타자 기록"에서 첫 번째 단어만 뽑으면 된다.
-
     <h6 class="tit-team" id="lblAwayHitter">
         <span class="logo">
             <img src="//lgcxydabfbch3774324.cdn.ntruss.com \ 
             /KBO_IMAGE/emblem/regular/2020/initial_HH_s.png" alt="한화 이글스">
         </span>
     한화 이글스 타자 기록</h6>
-
         Args:
             temp_teams (soup): 위에서 보여준 html soup
-
         Returns:
             temp_data (tuple): (두산, LG)처럼 `str`형식으로 두 팀 명,
                                 첫 번째 팀이 원정팀(두산), 두 번째 팀(LG)은 홈팀
@@ -112,4 +107,3 @@ def home_pitcher(tables, team):
     home["팀"] = team[1]
     home = home.fillna(0)
     return home
-

@@ -1,13 +1,11 @@
+
 def change_name_to_id(team_name, year):
     """팀 이름을 팀 ID로 바꾸는 함수
-
     2021년 SSG가 창단했다. 그래서 팀명이 SK에서 SSG로 변경되었다.
     그러나 KBO 홈피에서 사용하는 ID는 안 바꾼 것 같다.
     그래서 팀명을 KBO에서 바꾸는 함수를 새로 만들었다.
-
     Args:
         team_name (str): 팀명
-
     """
 
     team_list_2021 = {

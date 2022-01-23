@@ -1,4 +1,3 @@
-
 from datetime import date
 from tqdm import tqdm
 from dateutil.relativedelta import relativedelta
@@ -6,7 +5,7 @@ import pandas as pd
 from kbodata.parser.schedule import parsing_daily_schedule, parsing_monthly_schedule
 
 
-def get_daily(seleted_date, Driver_path):
+def get_daily_schedule(seleted_date, Driver_path):
     """유저 함수: 2008년 이후 데이터 중에 요청된 날짜의 경기 스케쥴을 가져온다.
 
     ex) get_daily_schedule("20210420","chromedriver")
@@ -30,7 +29,7 @@ def get_daily(seleted_date, Driver_path):
     return data
 
 
-def get_monthly(start_date, end_date, Driver_path, only_month = False):
+def get_monthly_schedule(start_date, end_date, Driver_path, only_month = False):
     """유저 함수: 2008년부터 달 단위로 요청된 경기 스케쥴을 가져온다.
 
     ex) get_monthly_schedule("202104","202105",'chromedriver')

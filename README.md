@@ -17,24 +17,24 @@ You can download it from [this page](https://chromedriver.chromium.org/downloads
 1. 원하는 날짜의 경기 스케쥴을 다운로드 받습니다.
 
     ```python
-    from kbodata.get import *
+    import kbodata
 
     # 2021년 4월 20일의 KBO 경기 스케쥴을 가져옵니다.
-    >>> test1 = schedule.get_daily("20210420","chromedriver")
+    >>> test1 = kbodata.get_daily_schedule("20210420",'chromedriver')
 
     # 2021년 4월부터 2021년 5월까지의 KBO 경기 스케쥴을 가져옵니다.
-    >>> test2 = schedule.get_monthly("202104","202105","chromedriver")
+    >>> test2 = kbodata.get_monthly_schedule("202104","202105",'chromedriver')
     # 2020년, 2021년 4월의 KBO 경기 스케쥴을 가져옵니다. 
-    >>> test3 = schedule.get_monthly("202004","202104","chromedriver", True)
+    >>> test3 = kbodata.get_monthly_schedule("202004","202104",'chromedriver',True)
     ```
 
 2. 해당 스케쥴을 바탕으로 경기 정보를 가져옵니다.
 
 ```python
     # KBO 경기정보를 dict 형식으로 가져옵니다.
-    data1 = game.get_data(test1,'chromedriver')
-    data2 = game.get_data(test2,'chromedriver')
-    data3 = game.get_data(test3,'chromedriver')
+    data1 = kbodata.get_game_data(test1,'chromedriver')
+    data2 = kbodata.get_game_data(test2,'chromedriver')
+    data3 = kbodata.get_game_data(test3,'chromedriver')
 ```
 
 ### 데이터 변형하기 (kbodata.load module)
