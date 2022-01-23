@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "kbo_data"
+name = "kbo-data"
 version = "0.1.0"
 description = ""
 authors = ["Hyeonji-Ryu <cjstk3940@naver.com>"]
