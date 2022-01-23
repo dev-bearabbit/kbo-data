@@ -17,9 +17,9 @@ info_url = config["DEFAULT"]["Game_info_URL"]
 
 
 def get_schedule(start_date, end_date, Driver_path, only_month = False):
-    """실제 사용하는 함수: 2008년부터 달 단위로 요청된 경기 스케쥴을 가져온다.
+    """유저 함수: 2008년부터 달 단위로 요청된 경기 스케쥴을 가져온다.
 
-    ex) get_schedule("202104","202105",'chromedriver')
+    ex) get_month_schedule("202104","202105",'chromedriver')
 
         status      date home away  dbheader gameid
     0     경기취소  20210403   HH   KT         0  HHKT0
@@ -31,8 +31,8 @@ def get_schedule(start_date, end_date, Driver_path, only_month = False):
     if len(start_date+end_date) != 12 or (start_date+end_date).isdigit() == False:
         return print("ERROR: please check start date or end date")
     schedule = pd.DataFrame()
-    st_date = date(int(start_date[:4]),int(start_date[4:7]),1)
-    ed_date = date(int(end_date[:4]),int(end_date[4:7]),2)
+    st_date = date(int(start_date[:4]),int(start_date[4:6]),1)
+    ed_date = date(int(end_date[:4]),int(end_date[4:6]),2)
     
     if st_date.year < 2008: return print("ERROR: This library only provides data since 2008.")
     if st_date >= ed_date: return print("ERROR: start date is later than the end date.")
