@@ -5,8 +5,10 @@ kbo_data is a Python package that provides Korean professional baseball game inf
 
 ## Required
 
-이 패키지를 사용하기 위해서는 chrome driver가 필요합니다.
-chrome driver는 
+이 패키지를 사용하기 위해서는 chrome driver가 필요합니다.  
+chrome driver는 [해당 페이지](https://chromedriver.chromium.org/downloads)에서 다운로드할 수 있습니다.  
+This package is required chrome driver.
+You can download it from [this page](https://chromedriver.chromium.org/downloads))
 
 ## How to Use
 
