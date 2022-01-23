@@ -28,7 +28,6 @@ def get_schedule(start_date, end_date, Driver_path, only_month = False):
     259     종료  20210530   KT   HT         0  KTHT0
     260     종료  20210530   NC   LT         0  NCLT0
     """
-    
     if len(start_date+end_date) != 12 or (start_date+end_date).isdigit() == False:
         return print("ERROR: please check start date or end date")
     schedule = pd.DataFrame()
@@ -43,21 +42,19 @@ def get_schedule(start_date, end_date, Driver_path, only_month = False):
     
     if only_month == True:
         if st_date.month != ed_date.month: return print("ERROR: start and end months are different")
-        pbar = tqdm(desc="in progress",total = delta.years+1)
-        while st_date.year <= ed_date.year:
-            data = get_monthly_schedule(st_date.year,st_date.month,Driver_path)
-            schedule = pd.concat([schedule,data],axis=0,ignore_index=True)
-            st_date += relativedelta(years=1)
-            pbar.update(1)
-        pbar.close()
+        with tqdm(desc="in progress",total=delta.years+1) as pbar:
+            while st_date.year <= ed_date.year:
+                data = get_monthly_schedule(st_date.year,st_date.month,Driver_path)
+                schedule = pd.concat([schedule,data],axis=0,ignore_index=True)
+                st_date += relativedelta(years=1)
+                pbar.update(1)
     else:
-        pbar = tqdm(desc="in progress",total = delta.years*12 + delta.months+1)
-        while st_date < ed_date:
-            data = get_monthly_schedule(st_date.year,st_date.month,Driver_path)
-            schedule = pd.concat([schedule,data],axis=0,ignore_index=True)
-            st_date += relativedelta(months=1)
-            pbar.update(1)
-        pbar.close()
+        with tqdm(desc="in progress",total=delta.years*12+delta.months+1) as pbar:
+            while st_date < ed_date:
+                data = get_monthly_schedule(st_date.year,st_date.month,Driver_path)
+                schedule = pd.concat([schedule,data],axis=0,ignore_index=True)
+                st_date += relativedelta(months=1)
+                pbar.update(1)
     return schedule
 
 
@@ -93,6 +90,8 @@ def get_monthly_schedule(year, month, Driver_path):
                 
             result.append(transform_info(status,day,teams))
         result = pd.DataFrame(result, columns=["status","date","home","away"])
+        result["status"].replace("경기취소", "canceled", inplace=True)
+        result["status"].replace("종료", "finished", inplace=True)
         result = add_gameid(result)
     except Exception as e:
         print()
@@ -117,15 +116,15 @@ def add_gameid(result):
     # 더블헤더 여부 저장할 열 생성
     result["dbheader"] = 0
     # 날짜 별 경기 횟수 조회
-    temp = result.groupby(["date","away","home"],as_index=False).count()
+    temp = result.groupby(["status","date","away","home"],as_index=False).count()
     # 그 중 더블헤더 경기만 추출
-    dbheader = temp.loc[temp["status"] == 2]
+    dbheader = temp.loc[temp["dbheader"] == 2]
     # 더블헤더 경기인 경우 1, 2 로 입력
     for idx, dbhd in dbheader.iterrows():
         bh = dbhd["date"]+dbhd["away"]+dbhd["home"]
         count = 1
         for jdx, data in result.iterrows():
-            dt = data["date"]+data["away"]+data["home"]
+            dt = data["date"]+data["away"]+data["home"] 
             if dt == bh:
                 result.iat[jdx, 4] = count
                 count += 1

@@ -6,10 +6,9 @@ import configparser
 
 from selenium import webdriver
 from bs4 import BeautifulSoup
-
-from kbo_data.get.parser import scoreboard, etc_info, looking_for_team_names
-from kbo_data.get.parser import away_batter, home_batter, away_pitcher, home_pitcher
-from kbo_data.get.schedule import get_schedule
+from tqdm import tqdm
+from kbo_data.parser.html import scoreboard, etc_info, looking_for_team_names
+from kbo_data.parser.html import away_batter, home_batter, away_pitcher, home_pitcher
 
 # 설정파일을 읽어오기 위해 configparser를 사용합니다.
 config = configparser.ConfigParser()
@@ -17,6 +16,21 @@ config = configparser.ConfigParser()
 config.read(os.path.join(os.path.dirname('__file__'),"kbo_data","config","config.ini"), encoding="utf-8")
 # 설정파일에 들어있는 KBO url을 가져 옵니다.
 url = config["DEFAULT"]["KBO_URL"]
+
+def get_data(schedule, Driver_path):
+    """스케쥴에 해당하는 데이터를 가져오는 함수
+    데이터들을 스크래핑하여 list로 반환한다.
+    """
+    data = []
+    with tqdm(desc="in progress",total=len(schedule)) as pbar:
+        for idx, row in schedule.iterrows():
+            if row["status"] == 'canceled':
+                pbar.update(1)
+            else:
+                raw_data = single_game(row["date"],row["gameid"],Driver_path)
+                data.append(raw_data)
+                pbar.update(1)
+    return data
 
 def get_page(gameDate, gameId, Driver_path):
     """
