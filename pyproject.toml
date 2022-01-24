@@ -3,7 +3,10 @@ name = "kbodata"
 version = "0.1.0"
 description = ""
 authors = ["Hyeonji-Ryu <cjstk3940@naver.com>"]
+license = "MIT"
+readme = "README.rst"
 
+# Requirements
 [tool.poetry.dependencies]
 python = "^3.9"
 selenium = "^3.141.0"
