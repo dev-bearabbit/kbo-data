@@ -46,8 +46,13 @@ def parsing_monthly_schedule(year, month, Driver_path):
         result["status"].replace("경기취소", "canceled", inplace=True)
         result["status"].replace("종료", "finished", inplace=True)
         result = add_gameid(result)
+
     except Exception as e:
         print()
+
+    finally:
+        driver.quit()
+    
     return result
 
 
@@ -80,8 +85,13 @@ def parsing_daily_schedule(info, Driver_path):
         result["status"].replace("경기취소", "canceled", inplace=True)
         result["status"].replace("종료", "finished", inplace=True)
         result = add_gameid(result)
+
     except Exception as e:
         print()
+
+    finally:
+        driver.quit()
+
     return result
 
 

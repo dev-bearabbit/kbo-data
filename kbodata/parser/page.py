@@ -11,9 +11,7 @@ from kbodata.parser.html import away_batter, home_batter, away_pitcher, home_pit
 config = configparser.ConfigParser()
 # 필요한 변수 가져오기
 config.read(os.path.join(os.path.dirname(__file__),"config.ini"), encoding="utf-8")
-print(os.path.join(os.path.dirname(__file__),"config.ini"))
 url = config["DEFAULT"]["KBO_URL"]
-
 
 def get_page(gameDate, gameId, Driver_path):
     """
@@ -70,7 +68,6 @@ def get_page(gameDate, gameId, Driver_path):
         soup = BeautifulSoup(driver.page_source, "lxml")
         tables = soup.find_all("table")
         record_etc = soup.findAll("div", {"class": "record-etc"})
-        box_score = soup.findAll("div", {"class": "box-score-wrap"})
 
         # 2021년 5월 12일 현재, h6는 팀 명에서만 사용한다.
         temp_teams = soup.findAll("h6")
@@ -132,6 +129,8 @@ def parsing_single_game(date, gameId, Driver_path):
     """
 
     temp_page = get_page(date, gameId, Driver_path)
+    if temp_page == None:
+        return print("ERROR: ")
     temp_scoreboard = scoreboard(temp_page["tables"], temp_page["teams"])
 
     temp_all = {
