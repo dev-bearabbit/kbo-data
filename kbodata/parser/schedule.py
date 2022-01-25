@@ -3,6 +3,9 @@ import configparser
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import pandas as pd
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from kbodata.parser.util import change_name_to_id
 
 # 설정파일을 읽어오기 위해 configparser를 사용
@@ -12,85 +15,68 @@ config.read(os.path.join(os.path.dirname(__file__),"config.ini"), encoding="utf-
 info_url = config["DEFAULT"]["Game_info_URL"]
 
 
-def parsing_monthly_schedule(year, month, Driver_path):
+def parsing_monthly_schedule(year, month, driver):
 
-    try:
-        # 스케쥴 데이터 스크래핑
-        options = webdriver.ChromeOptions()
-        options.add_argument("headless")
-        options.add_argument("window-size=1920x1080")
-        options.add_argument("disable-gpu")
-        driver = webdriver.Chrome(Driver_path, options=options)
-        url = info_url + str(year)+str(month).zfill(2)
-        driver.get(url)
-        driver.implicitly_wait(5)
-        # 스크래핑 된 데이터 정리
-        soup = BeautifulSoup(driver.page_source, "lxml")
-        table = soup.find('tbody',{"id":"scheduleList"})
-        result = []
-        for tr in table.find_all("tr"):
-            # 경기가 없는 경우에도 저장 X
-            if 'tr_empty' in tr['class']:
-                continue
-            # 경기가 올스타전(드림 vs.나눔)인 경우 저장 X
-            if tr.find("td",{"class":"td_sort"}).text == '올스타전':
-                continue
-            status = tr.find("span",{"class":"state_game"}).text
-            # 업데이트 안된 경기들도 저장 X
-            if status == '경기전':
-                continue
-            day = tr['data-date']
-            teams = tr.find("td",{"class":"td_team"})
-            result.append(transform_info(status,day,teams))
-        result = pd.DataFrame(result, columns=["status","date","home","away"])
-        result["status"].replace("경기취소", "canceled", inplace=True)
-        result["status"].replace("종료", "finished", inplace=True)
-        result = add_gameid(result)
-
-    except Exception as e:
-        print()
-
-    finally:
-        driver.quit()
+    url = info_url + str(year)+str(month).zfill(2)
+    driver.get(url)
+    data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"scheduleList")))
+    # 스크래핑 된 데이터 정리
+    table= BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
+    result = []
+    for tr in table.find_all("tr"):
+        # 경기가 없는 경우에도 저장 X
+        if 'tr_empty' in tr['class']:
+            continue
+        # 경기가 올스타전(드림 vs.나눔)인 경우 저장 X
+        if tr.find("td",{"class":"td_sort"}).text == '올스타전':
+            continue
+        status = tr.find("span",{"class":"state_game"}).text
+        # 업데이트 안된 경기들도 저장 X
+        if status == '경기전':
+            continue
+        day = tr['data-date']
+        teams = tr.find("td",{"class":"td_team"})
+        result.append(transform_info(status,day,teams))
+    result = pd.DataFrame(result, columns=["status","date","home","away"])
+    result["status"].replace("경기취소", "canceled", inplace=True)
+    result["status"].replace("종료", "finished", inplace=True)
+    result = add_gameid(result)
     
     return result
 
 
-def parsing_daily_schedule(info, Driver_path):
+def parsing_daily_schedule(year,month,day,driver):
 
-    try:
-        # 스케쥴 데이터 스크래핑
-        options = webdriver.ChromeOptions()
-        options.add_argument("headless")
-        options.add_argument("window-size=1920x1080")
-        options.add_argument("disable-gpu")
-        driver = webdriver.Chrome(Driver_path, options=options)
-        url = info_url + info
-        driver.get(url)
-        driver.implicitly_wait(5)
-        # 스크래핑 된 데이터 정리
-        soup = BeautifulSoup(driver.page_source, "lxml")
-        table = soup.find('tbody',{"id":"scheduleList"})
-        result = []
-        for tr in table.find_all("tr"):
-            
-            if tr['data-date'] == info:
-                    day = tr['data-date']
-                    teams = tr.find("td",{"class":"td_team"})
-                    status = tr.find("span",{"class":"state_game"}).text
-                    result.append(transform_info(status,day,teams))
-            else:
-                continue
-        result = pd.DataFrame(result, columns=["status","date","home","away"])
-        result["status"].replace("경기취소", "canceled", inplace=True)
-        result["status"].replace("종료", "finished", inplace=True)
-        result = add_gameid(result)
-
-    except Exception as e:
-        print()
-
-    finally:
-        driver.quit()
+    # 스케쥴 데이터 스크래핑
+    info = str(year)+str(month).zfill(2)+str(day).zfill(2)
+    url = info_url + info
+    driver.get(url)
+    # 스크래핑 된 데이터 정리
+    data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"scheduleList")))
+    table= BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
+    result = []
+    for tr in table.find_all("tr"):
+        # 경기가 없는 경우에도 저장 X
+        if 'tr_empty' in tr['class']:
+            continue
+        # 경기가 올스타전(드림 vs.나눔)인 경우 저장 X
+        if tr.find("td",{"class":"td_sort"}).text == '올스타전':
+            continue
+        status = tr.find("span",{"class":"state_game"}).text
+        # 업데이트 안된 경기들도 저장 X
+        if status == '경기전':
+            continue
+        if tr['data-date'] == info:
+                day = tr['data-date']
+                teams = tr.find("td",{"class":"td_team"})
+                status = tr.find("span",{"class":"state_game"}).text
+                result.append(transform_info(status,day,teams))
+        else:
+            continue
+    result = pd.DataFrame(result, columns=["status","date","home","away"])
+    result["status"].replace("경기취소", "canceled", inplace=True)
+    result["status"].replace("종료", "finished", inplace=True)
+    result = add_gameid(result)
 
     return result
 

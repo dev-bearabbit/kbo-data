@@ -58,13 +58,12 @@ def get_page(gameDate, gameId, Driver_path):
         options.add_argument("window-size=1920x1080")
         options.add_argument("disable-gpu")
         # 혹은 options.add_argument("--disable-gpu")
-
         driver = webdriver.Chrome(Driver_path, chrome_options=options)
+        driver.implicitly_wait(10)
         # 주소 보기
         # 20180801&amp;gameId=20180801WOSK0&amp;section=REVIEW
         temp_url = url + gameDate + "&amp;gameId=" + gameDate + gameId + "&amp;section=REVIEW"
         driver.get(temp_url)
-        driver.implicitly_wait(5)
         soup = BeautifulSoup(driver.page_source, "lxml")
         tables = soup.find_all("table")
         record_etc = soup.findAll("div", {"class": "record-etc"})

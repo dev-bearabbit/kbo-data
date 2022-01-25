@@ -2,7 +2,8 @@ __version__ = '0.1.0'
 
 from kbodata.get.schedule import(
     get_daily_schedule,
-     get_monthly_schedule
+     get_monthly_schedule,
+     get_yearly_schedule
      )
 
 from kbodata.get.game import get_game_data
