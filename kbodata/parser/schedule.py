@@ -1,7 +1,6 @@
 import os
 import configparser
 from bs4 import BeautifulSoup
-from selenium import webdriver
 import pandas as pd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,29 +16,38 @@ info_url = config["DEFAULT"]["Game_info_URL"]
 
 def parsing_monthly_schedule(year, month, driver):
 
-    url = info_url + str(year)+str(month).zfill(2)
-    driver.get(url)
-    data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"scheduleList")))
+    driver.get(info_url)
+    driver.find_element_by_id("ddlYear").send_keys(str(year))
+    driver.find_element_by_id("ddlMonth").send_keys(str(month).zfill(2))
+    data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"tblSchedule")))
     # 스크래핑 된 데이터 정리
-    table= BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
+    table = BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
     result = []
-    for tr in table.find_all("tr"):
-        # 경기가 없는 경우에도 저장 X
-        if 'tr_empty' in tr['class']:
+    not_listed = ["EAST", "WEST", "드림", "나눔"]
+    for td in table.find_all("td"):
+        # 경기 없는 날 확인
+        if len(td) == 1:
             continue
-        # 경기가 올스타전(드림 vs.나눔)인 경우 저장 X
-        if tr.find("td",{"class":"td_sort"}).text == '올스타전':
-            continue
-        status = tr.find("span",{"class":"state_game"}).text
-        # 업데이트 안된 경기들도 저장 X
-        if status == '경기전':
-            continue
-        day = tr['data-date']
-        teams = tr.find("td",{"class":"td_team"})
-        result.append(transform_info(status,day,teams))
+        for li in td.find_all("li"):
+            info = (li.text).split()
+            # 경기날짜 확인
+            if li.get('class') == ['dayNum']:
+                day = str(year)+str(month).zfill(2) + info[0].zfill(2)
+            # 나눔 경기는 제외
+            elif info[0] in not_listed:
+                continue
+            # 경기 취소 확인
+            elif li.get('class') == ['rainCancel']:
+                status = "canceled"
+                home = change_name_to_id(info[2],year)
+                away = change_name_to_id(info[0],year)
+                result.append([status,day,home,away])
+            else:
+                status = "finished"
+                home = change_name_to_id(info[-1],year)
+                away = change_name_to_id(info[0],year)
+                result.append([status,day,home,away])
     result = pd.DataFrame(result, columns=["status","date","home","away"])
-    result["status"].replace("경기취소", "canceled", inplace=True)
-    result["status"].replace("종료", "finished", inplace=True)
     result = add_gameid(result)
     
     return result
@@ -48,48 +56,36 @@ def parsing_monthly_schedule(year, month, driver):
 def parsing_daily_schedule(year,month,day,driver):
 
     # 스케쥴 데이터 스크래핑
-    info = str(year)+str(month).zfill(2)+str(day).zfill(2)
-    url = info_url + info
-    driver.get(url)
+    driver.get(info_url)
+    driver.find_element_by_id("ddlYear").send_keys(str(year))
+    driver.find_element_by_id("ddlMonth").send_keys(str(month).zfill(2))
+    data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"tblSchedule")))
     # 스크래핑 된 데이터 정리
-    data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"scheduleList")))
     table= BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
     result = []
-    for tr in table.find_all("tr"):
-        # 경기가 없는 경우에도 저장 X
-        if 'tr_empty' in tr['class']:
+    for td in table.find_all("td"):
+        if td.find("li",{"class":"dayNum"}).text != str(day):
             continue
-        # 경기가 올스타전(드림 vs.나눔)인 경우 저장 X
-        if tr.find("td",{"class":"td_sort"}).text == '올스타전':
-            continue
-        status = tr.find("span",{"class":"state_game"}).text
-        # 업데이트 안된 경기들도 저장 X
-        if status == '경기전':
-            continue
-        if tr['data-date'] == info:
-                day = tr['data-date']
-                teams = tr.find("td",{"class":"td_team"})
-                status = tr.find("span",{"class":"state_game"}).text
-                result.append(transform_info(status,day,teams))
-        else:
-            continue
+        for li in td.find_all("li"):
+            info = (li.text).split()
+            # 경기날짜 확인
+            if li.get('class') == ['dayNum']:
+                day = str(year)+str(month).zfill(2) + info[0].zfill(2)
+            # 경기 취소 확인
+            elif li.get('class') == ['rainCancel']:
+                status = "canceled"
+                home = change_name_to_id(info[2],year)
+                away = change_name_to_id(info[0],year)
+                result.append([status,day,home,away])
+            else:
+                status = "finished"
+                home = change_name_to_id(info[-1],year)
+                away = change_name_to_id(info[0],year)
+                result.append([status,day,home,away])
     result = pd.DataFrame(result, columns=["status","date","home","away"])
-    result["status"].replace("경기취소", "canceled", inplace=True)
-    result["status"].replace("종료", "finished", inplace=True)
     result = add_gameid(result)
 
     return result
-
-
-def transform_info(status, day, teams):
-    """팀 정보를 가져오는 함수. HTML에 있는 요소들을 찾아서 하나의 리스트로 업로드한다.
-        ex) html 코드 -> []
-    """
-    home = teams.find("div",{"class":"info_team team_home"})
-    home_team = home.find("span",{"class":"txt_team"}).text
-    away = teams.find("div",{"class":"info_team team_away"})
-    away_team = away.find("span",{"class":"txt_team"}).text
-    return [status, day, change_name_to_id(home_team,day[:4]), change_name_to_id(away_team,day[:4])]
 
 
 def add_gameid(result):
@@ -98,10 +94,21 @@ def add_gameid(result):
     """
     # 더블헤더 여부 저장할 열 생성
     result["dbheader"] = 0
+    
     # 날짜 별 경기 횟수 조회
-    temp = result.groupby(["status","date","away","home"],as_index=False).count()
+    temp = result.groupby(["date","away","home"],as_index=False).count()
+    
     # 그 중 더블헤더 경기만 추출
-    dbheader = temp.loc[temp["dbheader"] == 2]
+    checker = temp.loc[temp["status"] == 2]
+    
+    # 더블헤더 중 첫 경기가 취소된 경기 제거
+    dbheader = checker.copy()
+    for idx, dbhd in dbheader.iterrows():
+        bh = dbhd["date"]+dbhd["away"]+dbhd["home"]
+        stat = list(result.loc[result["date"]+result["away"]+result["home"] == bh]["status"])
+        if (stat[0] == 'canceled') & (stat[1] == 'finished'):
+                dbheader = dbheader.drop(idx)
+    
     # 더블헤더 경기인 경우 1, 2 로 입력
     for idx, dbhd in dbheader.iterrows():
         bh = dbhd["date"]+dbhd["away"]+dbhd["home"]
@@ -112,6 +119,6 @@ def add_gameid(result):
                 result.iat[jdx, 4] = count
                 count += 1
     # 더블헤더와 팀 정보로 gameid 생성
-    result["gameid"] = result[["home","away","dbheader"]].apply(lambda row: ''.join(row.values.astype(str)), axis=1)
+    result["gameid"] = result[["away","home","dbheader"]].apply(lambda row: ''.join(row.values.astype(str)), axis=1)
 
     return result

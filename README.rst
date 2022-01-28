@@ -34,7 +34,7 @@ How to Use
     >>> month = kbodata.get_monthly_schedule(2021,4,'chromedriver')
 
     # 2021년 KBO 경기 스케쥴을 가져옵니다. 
-    >>> year= kbodata.get_yearly_schedule(2021,'chromedriver',True)
+    >>> year = kbodata.get_yearly_schedule(2021,'chromedriver',True)
 
 
 2. 해당 스케쥴을 바탕으로 경기 정보를 가져옵니다.
