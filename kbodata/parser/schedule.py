@@ -1,7 +1,7 @@
 import os
 import configparser
-from bs4 import BeautifulSoup
 import pandas as pd
+from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -49,6 +49,7 @@ def parsing_monthly_schedule(year, month, driver):
                 result.append([status,day,home,away])
     result = pd.DataFrame(result, columns=["status","date","home","away"])
     result = add_gameid(result)
+    result = delete_non_provided_data(result)
     
     return result
 
@@ -84,6 +85,7 @@ def parsing_daily_schedule(year,month,day,driver):
                 result.append([status,day,home,away])
     result = pd.DataFrame(result, columns=["status","date","home","away"])
     result = add_gameid(result)
+    result = delete_non_provided_data(result)
 
     return result
 
@@ -120,5 +122,16 @@ def add_gameid(result):
                 count += 1
     # 더블헤더와 팀 정보로 gameid 생성
     result["gameid"] = result[["away","home","dbheader"]].apply(lambda row: ''.join(row.values.astype(str)), axis=1)
+
+    return result
+
+def delete_non_provided_data(result):
+    """경기정보가 제공되지 않은 스케쥴을 제거하는 함수
+    """
+    not_provided = [("20080330","LTHH0"),("20090404","WOLT0"),("20150708","HTWO0"),("20180801","WOSK0")]
+    for day, gameid in not_provided:
+        idx = result[(result["date"]==day)&(result["gameid"]==gameid)].index
+        result = result.drop(idx)
+        result.reset_index(inplace=True,drop=True)
 
     return result
