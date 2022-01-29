@@ -21,7 +21,7 @@ How to Use
 데이터 가져오기 (kbodata.get module)
 =======================================
 
-1. 원하는 날짜의 경기 스케쥴을 다운로드 받습니다.  
+| 1. 원하는 날짜의 경기 스케쥴을 다운로드 받습니다.  
 |  you can download KBO match schedule that you want to get.
 
 .. code-block:: python
@@ -41,7 +41,7 @@ How to Use
     >>> year = kbodata.get_yearly_schedule(2021,'chromedriver')
 
 
-2. 해당 스케쥴을 바탕으로 경기 정보를 json 형식으로 가져옵니다.  
+| 2. 해당 스케쥴을 바탕으로 경기 정보를 json 형식으로 가져옵니다.  
 |  It will be broght match information in json format based on the schedule.  
 
 .. code-block:: python
