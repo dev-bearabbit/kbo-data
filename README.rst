@@ -57,13 +57,11 @@ How to Use
     # 2021년 KBO 경기 정보를 가져옵니다. 
     # Get the KBO match information for 2021.
     data3 = kbodata.get_game_data(year,'chromedriver')
-.. code::
 
-   Json 형식은 아래와 같습니다.
+Json 형식은 아래와 같습니다.
 
 .. code-block:: sql
 
-.. code::
 
 데이터 변형하기 (kbodata.load module)
 =======================================
