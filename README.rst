@@ -58,7 +58,7 @@ How to Use
 
 Json 형식은 아래와 같습니다.
 
-.. code-block:: python
+.. code-block:: json
 
     { id: date_gameid,
     contents: {
