@@ -1,7 +1,6 @@
 import ast
 import os
 import configparser
-from re import S
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -20,7 +19,7 @@ url = config["DEFAULT"]["KBO_URL"]
 def parsing_page(gameDate, gameId, driver):
     temp_url = url + gameDate + "&amp;gameId=" + gameDate + gameId + "&amp;section=REVIEW"
     driver.get(temp_url)
-    data = WebDriverWait(driver, 1000).until(EC.visibility_of_element_located((By.ID,"gameCenterContents")))
+    data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"gameCenterContents")))
     soup = BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
     tables = soup.find_all("table")
     record_etc = soup.findAll("div", {"class": "record-etc"})
@@ -40,7 +39,7 @@ def parsing_single_game(date, gameId, driver):
     """
     다운받은 단일 게임 자료를 사용하기 쉽게 원본을 보존하며 적절하게 정리하는 함수
 
-    `getting_page()`을 통해 받은 단일 게임 자료를
+    `get_page()`을 통해 받은 단일 게임 자료를
     데이터 분석하기 위해 modify 하기 쉽도록 다운받은 내용 그대로 유지하면서
     내용을 추가하지 않고 필요하지 않은 부분, 예를 들어 HTML 관련 코드 등을 정리한다.
     이렇게 처리하는 이유는 다운받은 것을 거의 원본 그대로 보관하면
@@ -48,7 +47,7 @@ def parsing_single_game(date, gameId, driver):
 
     Example
     -------
-        >>> temp_page = parsing_single_game("20181010","KTLT1", driver)
+    >>> temp_page = parsing_single_game("20181010","KTLT1", driver)
 
     Parameters
     ----------
