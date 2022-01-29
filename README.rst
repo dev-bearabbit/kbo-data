@@ -9,10 +9,10 @@ What is kbo-data
 Required
 ---------------
 
-이 패키지를 사용하기 위해서는 chrome driver가 필요합니다.  
-chrome driver는 `해당 페이지 <https://chromedriver.chromium.org/downloads>`_ 에서 다운로드할 수 있습니다.  
-This package is required chrome driver.
-You can download it from `this page <https://chromedriver.chromium.org/downloads>`_
+| 이 패키지를 사용하기 위해서는 chrome driver가 필요합니다.  
+| chrome driver는 `해당 페이지 <https://chromedriver.chromium.org/downloads>`_ 에서 다운로드할 수 있습니다.  
+| This package is required chrome driver.
+| You can download it from `this page <https://chromedriver.chromium.org/downloads>`_
 
 ---------------
 How to Use
@@ -22,7 +22,7 @@ How to Use
 =======================================
 
 1. 원하는 날짜의 경기 스케쥴을 다운로드 받습니다.  
-   you can download KBO match schedule that you want to get.
+|  you can download KBO match schedule that you want to get.
 
 .. code-block:: python
 
@@ -42,7 +42,7 @@ How to Use
 
 
 2. 해당 스케쥴을 바탕으로 경기 정보를 json 형식으로 가져옵니다.  
-   It will be broght match information in json format based on the schedule.  
+|  It will be broght match information in json format based on the schedule.  
 
 .. code-block:: python
 
@@ -66,16 +66,16 @@ Json 형식은 아래와 같습니다.
 데이터 변형하기 (kbodata.load module)
 =======================================
 
-가져온 데이터들을 원하는 파일 타입으로 변환합니다. 지원하는 파일 타입은 아래와 같습니다.
+| 가져온 데이터들을 원하는 파일 타입으로 변환합니다. 지원하는 파일 타입은 아래와 같습니다.
 
 
 ---------------
 Issues
 ---------------
 
-KBO 공식 홈페이지에 없는 데이터는 제공되지 않습니다. 데이터가 제공되지 않는 경기 정보는 아래와 같습니다.  
-Data that is not on the KBO official website is not provided.  
-Match information for which data is not provided are listed below.  
+| KBO 공식 홈페이지에 없는 데이터는 제공되지 않습니다. 데이터가 제공되지 않는 경기 정보는 아래와 같습니다.  
+| Data that is not on the KBO official website is not provided.  
+| Match information for which data is not provided are listed below.  
 
 - 2008-03-30 LTHH0
 - 2009-04-04 WOLT0
