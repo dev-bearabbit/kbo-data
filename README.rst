@@ -59,7 +59,16 @@ How to Use
 Json 형식은 아래와 같습니다.
 
 .. code-block:: sql
-
+{ id: date_gameid,
+  contents: {
+      'scoreboard': []
+      'ETC_info': {}
+      'away_batter': []
+      'home_batter': []
+      'away_pitcher': []
+      'home_pitcher': []
+  }
+}
 
 데이터 변형하기 (kbodata.load module)
 =======================================
