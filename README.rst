@@ -9,10 +9,8 @@ What is kbo-data
 Required
 ---------------
 
-| 이 패키지를 사용하기 위해서는 chrome driver가 필요합니다.  
-| chrome driver는 `해당 페이지 <https://chromedriver.chromium.org/downloads>`_ 에서 다운로드할 수 있습니다.  
-| This package is required chrome driver.
-| You can download it from `this page <https://chromedriver.chromium.org/downloads>`_
+| 이 패키지를 사용하기 위해서는 chrome driver가 필요합니다. chrome driver는 `해당 페이지 <https://chromedriver.chromium.org/downloads>`_ 에서 다운로드할 수 있습니다.  
+| This package is required chrome driver. You can download it from `this page <https://chromedriver.chromium.org/downloads>`_
 
 ---------------
 How to Use
@@ -74,8 +72,7 @@ Issues
 ---------------
 
 | KBO 공식 홈페이지에 없는 데이터는 제공되지 않습니다. 데이터가 제공되지 않는 경기 정보는 아래와 같습니다.  
-| Data that is not on the KBO official website is not provided.  
-| Match information for which data is not provided are listed below.  
+| Data that is not on the KBO official website is not provided. Match information for which data is not provided are listed below.  
 | 
 - 2008-03-30 LTHH0
 - 2009-04-04 WOLT0
