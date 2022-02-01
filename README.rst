@@ -91,11 +91,11 @@ The JSON format is as below.
     pitcher = kbodata.pitcher_to_DataFrame(data1)
 
     # 팀 경기 정보만을 정리하여 Dict으로 변환합니다.
-    scoreboard = kbodata.scoreboard_to_DataFrame(data1)
+    scoreboard = kbodata.scoreboard_to_Dict(data1)
     # 타자 정보만을 정리하여 Dict으로 변환합니다.
-    batter = kbodata.batter_to_DataFrame(data1)
+    batter = kbodata.batter_to_Dict(data1)
     # 투수 정보만을 정리하여 Dict으로 변환합니다.
-    pitcher = kbodata.pitcher_to_DataFrame(data1)
+    pitcher = kbodata.pitcher_to_Dict(data1)
 
 
 ---------------
