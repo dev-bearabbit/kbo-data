@@ -28,15 +28,15 @@ How to Use
 
     # 2021년 4월 20일의 KBO 경기 스케쥴을 가져옵니다.
     # Get the KBO match schedule for April 20, 2021.
-    >>> day = kbodata.get_daily_schedule(2021,4,20,'chromedriver')
+    >>> day = kbodata.get_daily_schedule(2021,4,20,'chromedriver_path')
 
     # 2021년 4월 KBO 경기 스케쥴을 가져옵니다.
     # Get the KBO match schedule for April 2021.
-    >>> month = kbodata.get_monthly_schedule(2021,4,'chromedriver')
+    >>> month = kbodata.get_monthly_schedule(2021,4,'chromedriver_path')
 
     # 2021년 KBO 경기 스케쥴을 가져옵니다. 
     # Get the KBO match schedule for 2021.
-    >>> year = kbodata.get_yearly_schedule(2021,'chromedriver')
+    >>> year = kbodata.get_yearly_schedule(2021,'chromedriver_path')
 
 
 | 2. 해당 스케쥴을 바탕으로 경기 정보를 JSON 형식으로 가져옵니다.  
@@ -46,15 +46,15 @@ How to Use
 
     # 2021년 4월 20일의 KBO 경기 정보를 가져옵니다.
     # Get the KBO match information for April 20, 2021.
-    data1 = kbodata.get_game_data(day,'chromedriver')
+    data1 = kbodata.get_game_data(day,'chromedriver_path')
 
     # 2021년 4월 KBO 경기 정보를 가져옵니다.
     # Get the KBO match information for April 2021.
-    data2 = kbodata.get_game_data(month,'chromedriver')
+    data2 = kbodata.get_game_data(month,'chromedriver_path')
 
     # 2021년 KBO 경기 정보를 가져옵니다. 
     # Get the KBO match information for 2021.
-    data3 = kbodata.get_game_data(year,'chromedriver')
+    data3 = kbodata.get_game_data(year,'chromedriver_path')
 
 JSON 형식은 아래와 같습니다.
 The JSON format is as below.
