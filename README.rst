@@ -79,7 +79,7 @@ The JSON format is as below.
 | This module converts data into specific file types. The supported file types are as follows.
 |
 - DataFrame(pandas)
-= Dict
+- Dict
 
 .. code-block:: python
 
