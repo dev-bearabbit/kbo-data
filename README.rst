@@ -39,8 +39,8 @@ How to Use
     >>> year = kbodata.get_yearly_schedule(2021,'chromedriver')
 
 
-| 2. 해당 스케쥴을 바탕으로 경기 정보를 json 형식으로 가져옵니다.  
-| 2. It will be broght match information in json format based on the schedule.  
+| 2. 해당 스케쥴을 바탕으로 경기 정보를 JSON 형식으로 가져옵니다.  
+| 2. It will be broght match information in JSON format based on the schedule.  
 
 .. code-block:: python
 
@@ -56,7 +56,8 @@ How to Use
     # Get the KBO match information for 2021.
     data3 = kbodata.get_game_data(year,'chromedriver')
 
-Json 형식은 아래와 같습니다.
+JSON 형식은 아래와 같습니다.
+The JSON format is as below.
 
 .. code-block:: bash
 
@@ -74,7 +75,27 @@ Json 형식은 아래와 같습니다.
 데이터 변형하기 (kbodata.load module)
 =======================================
 
-| 가져온 데이터들을 원하는 파일 타입으로 변환합니다. 지원하는 파일 타입은 아래와 같습니다.
+| 가져온 데이터들을 특정 파일 타입으로 변환합니다. 지원하는 파일 타입은 아래와 같습니다.
+| This module converts data into specific file types. The supported file types are as follows.
+|
+- DataFrame(pandas)
+= Dict
+
+.. code-block:: python
+
+    # 팀 경기 정보만을 정리하여 DataFrame으로 변환합니다.
+    scoreboard = kbodata.scoreboard_to_DataFrame(data1)
+    # 타자 정보만을 정리하여 DataFrame으로 변환합니다.
+    batter = kbodata.batter_to_DataFrame(data1)
+    # 투수 정보만을 정리하여 DataFrame으로 변환합니다.
+    pitcher = kbodata.pitcher_to_DataFrame(data1)
+
+    # 팀 경기 정보만을 정리하여 Dict으로 변환합니다.
+    scoreboard = kbodata.scoreboard_to_DataFrame(data1)
+    # 타자 정보만을 정리하여 Dict으로 변환합니다.
+    batter = kbodata.batter_to_DataFrame(data1)
+    # 투수 정보만을 정리하여 Dict으로 변환합니다.
+    pitcher = kbodata.pitcher_to_DataFrame(data1)
 
 
 ---------------
