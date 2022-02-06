@@ -46,15 +46,15 @@ How to Use
 
     # 2021년 4월 20일의 KBO 경기 정보를 가져옵니다.
     # Get the KBO match information for April 20, 2021.
-    data1 = kbodata.get_game_data(day,'chromedriver_path')
+    >>> day_data = kbodata.get_game_data(day,'chromedriver_path')
 
     # 2021년 4월 KBO 경기 정보를 가져옵니다.
     # Get the KBO match information for April 2021.
-    data2 = kbodata.get_game_data(month,'chromedriver_path')
+    >>> month_data = kbodata.get_game_data(month,'chromedriver_path')
 
     # 2021년 KBO 경기 정보를 가져옵니다. 
     # Get the KBO match information for 2021.
-    data3 = kbodata.get_game_data(year,'chromedriver_path')
+    >>> year_data = kbodata.get_game_data(year,'chromedriver_path')
 
 JSON 형식은 아래와 같습니다.
 The JSON format is as below.
@@ -97,7 +97,6 @@ The JSON format is as below.
     # 투수 정보만을 정리하여 Dict으로 변환합니다.
     pitcher = kbodata.pitcher_to_Dict(data1)
 
-
 ---------------
 Issues
 ---------------
@@ -107,5 +106,7 @@ Issues
 | 
 - 2008-03-30 LTHH0
 - 2009-04-04 WOLT0
+- 2010-03-20 OBLT0
+- 2010-03-20 WOSS0
 - 2015-07-08 HTWO0
 - 2018-08-01 WOSK0

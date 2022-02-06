@@ -41,7 +41,6 @@ def get_monthly_schedule(year, month, Driver_path):
     """
     if (str(year)+str(month)).isdigit() == False:
         return print("ERROR: INVALID PARAMETER. please check year or month")
-    schedule = pd.DataFrame()
     st_date = date(year,month,1)
     
     if st_date.year < 2008: return print("ERROR: This library only provides data since 2008.")

@@ -37,7 +37,7 @@ def parsing_monthly_schedule(year, month, driver):
             elif info[0] in not_listed:
                 continue
             # 경기 취소 확인
-            elif li.get('class') == ['rainCancel']:
+            elif (li.get('class') == ['rainCancel']) or (day == "20111025"):
                 status = "canceled"
                 home = change_name_to_id(info[2],year)
                 away = change_name_to_id(info[0],year)
@@ -128,7 +128,7 @@ def add_gameid(result):
 def delete_non_provided_data(result):
     """경기정보가 제공되지 않은 스케쥴을 제거하는 함수
     """
-    not_provided = [("20080330","LTHH0"),("20090404","WOLT0"),("20150708","HTWO0"),("20180801","WOSK0")]
+    not_provided = [("20080330","LTHH0"),("20090404","WOLT0"),("20100320","OBLT0"),("20100320","WOSS0"),("20150708","HTWO0"),("20180801","WOSK0")]
     for day, gameid in not_provided:
         idx = result[(result["date"]==day)&(result["gameid"]==gameid)].index
         result = result.drop(idx)
