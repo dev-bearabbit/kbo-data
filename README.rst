@@ -97,6 +97,12 @@ The JSON format is as below.
     # 투수 정보만을 정리하여 Dict으로 변환합니다.
     pitcher = kbodata.pitcher_to_Dict(day_data)
 
+| 변환된 데이터에 대한 정보는 아래의 링크에서 확인할 수 있습니다.
+| You can find information about the converted data at the link below.
+
+- _scoreboard: 
+- _batter:
+- _pitcher:
 
 ---------------
 Issues
