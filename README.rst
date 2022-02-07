@@ -56,8 +56,8 @@ How to Use
     # Get the KBO match information for 2021.
     >>> year_data = kbodata.get_game_data(year,'chromedriver_path')
 
-JSON 형식은 아래와 같습니다.
-The JSON format is as below.
+| JSON 형식은 아래와 같습니다.
+| The JSON format is as below.
 
 .. code-block:: bash
 
@@ -100,8 +100,8 @@ The JSON format is as below.
 | 변환된 데이터에 대한 정보는 아래의 링크에서 확인할 수 있습니다.
 | You can find information about the converted data at the link below.
 
-- _scoreboard: 
-- _batter:
+- _scoreboard: https://github.com/Hyeonji-Ryu/kbo-data/blob/main/docs/scoreboard.md
+- _batter: 
 - _pitcher:
 
 ---------------
