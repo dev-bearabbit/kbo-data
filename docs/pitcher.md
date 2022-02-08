@@ -10,7 +10,7 @@ If you want to store data in DBMS, you can use the DDL query below.
 ```sql
 CREATE TABLE pitcher(
     idx BIGINT(11) NOT NULL COMMENT "조합키(시합날짜+더블헤더+팀ID)",
-    playerid INT(5) NOT NULL COMMENT "선수ID",
+    name VARCHAR(8) NOT NULL COMMENT "이름",
     team VARCHAR(4)  DEFAULT NULL COMMENT "팀이름",
     mound TINYINT(1) DEFAULT NULL COMMENT "선발",
     inning INT(1) DEFAULT NULL COMMENT "이닝",
