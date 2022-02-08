@@ -24,7 +24,6 @@ CREATE TABLE pitcher(
     homerun INT(2) DEFAULT NULL COMMENT "피홈런",
     battednum INT(2) DEFAULT NULL COMMENT "피타수",
     batternum INT(2) DEFAULT NULL COMMENT "피타자",
-    CONSTRAINT scoreboards_pitcher_idx_fk FOREIGN KEY (idx) REFERENCES scoreboard (idx),
-    CONSTRAINT player_id_pitcher_playerid_fk FOREIGN KEY (playerid) REFERENCES player_id (playerid)
+    CONSTRAINT scoreboards_pitcher_idx_fk FOREIGN KEY (idx) REFERENCES scoreboard (idx)
 );
 ```

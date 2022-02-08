@@ -35,7 +35,6 @@ CREATE TABLE batter(
     bat_num  INT(2) DEFAULT NULL COMMENT "타수(AB)",
     hit_get  INT(2) DEFAULT NULL COMMENT "타점(RBI)",
     own_get  INT(2) DEFAULT NULL COMMENT "득점(R)",
-    CONSTRAINT scoreboards_batter_idx_fk FOREIGN KEY (idx) REFERENCES scoreboard (idx),
-    CONSTRAINT player_id_batter_playerid_fk FOREIGN KEY (playerid) REFERENCES player_id (playerid)
+    CONSTRAINT scoreboards_batter_idx_fk FOREIGN KEY (idx) REFERENCES scoreboard (idx)
 );
 ```
