@@ -27,7 +27,7 @@ def pitcher_modify(data):
         for pitcher in pitchers:
             new_info={}
             new_info['idx'] = make_primary_key(pitcher["팀"], game_info["year"], game_info["month"], game_info["day"], game_info["더블헤더"])
-            new_info['playerid'] = pitcher["선수명"] #함수 만들어야 함
+            new_info['name'] = pitcher["선수명"]
             new_info['team'] = pitcher["팀"]
             new_info['mound'] = '1' if pitcher['등판'] == '선발' else '0'
             new_info['inning'] = change_inning(pitcher['이닝'])

@@ -43,7 +43,7 @@ def batter_modify(data):
                 game_info["day"],
                 game_info["더블헤더"],
             )
-            new_info["playerid"] = batter["선수명"]  # 함수 만들어야 함
+            new_info["name"] = batter["선수명"]
             new_info["team"] = batter["팀"]
             new_info["position"] = change_position(batter["포지션"])
             new_info = add_ining(Batter_factor, new_info, batter)

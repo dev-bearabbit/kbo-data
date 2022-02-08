@@ -99,7 +99,7 @@ How to Use
 
 | 변환된 데이터에 대한 정보는 아래의 링크에서 확인할 수 있습니다.
 | You can find information about the converted data at the link below.
-
+|
 - Scoreboard: https://github.com/Hyeonji-Ryu/kbo-data/blob/main/docs/scoreboard.md
 - Batter: https://github.com/Hyeonji-Ryu/kbo-data/blob/main/docs/batter.md
 - Pitcher: https://github.com/Hyeonji-Ryu/kbo-data/blob/main/docs/pitcher.md
