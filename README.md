@@ -10,6 +10,15 @@ This package is required chrome driver. You can download it from [this page](htt
 
 ## How to Use
 
+### 패키지 설치하기
+
+먼저 패키지를 설치합니다.  
+you have to install kbodata package first.
+
+```bash
+pip install kbodata
+```
+
 ### 데이터 가져오기 (kbodata.get module)
 
 원하는 날짜의 경기 스케쥴을 다운로드 받습니다.  
