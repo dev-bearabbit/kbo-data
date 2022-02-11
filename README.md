@@ -1,29 +1,21 @@
-===================
-What is kbo-data
-===================
+# What is kbo-data
 
-| kbo-data는 한국프로야구 경기정보를 스크래핑하는 파이썬 패키지입니다.
-| kbo-data is a Python package that provides Korean professional baseball game information by scraping.
+kbo-data는 한국프로야구 경기정보를 스크래핑하는 파이썬 패키지입니다.  
+kbo-data is a Python package that provides Korean professional baseball game information by scraping.
 
----------------
-Required
----------------
+## Required
 
-| 이 패키지를 사용하기 위해서는 chrome driver가 필요합니다. chrome driver는 `해당 페이지 <https://chromedriver.chromium.org/downloads>`_ 에서 다운로드할 수 있습니다.  
-| This package is required chrome driver. You can download it from `this page <https://chromedriver.chromium.org/downloads>`_
+이 패키지를 사용하기 위해서는 chrome driver가 필요합니다. chrome driver는 [해당 페이지](https://chromedriver.chromium.org/downloads)에서 다운로드할 수 있습니다.  
+This package is required chrome driver. You can download it from [this page](https://chromedriver.chromium.org/downloads)
 
----------------
-How to Use
----------------
+## How to Use
 
-데이터 가져오기 (kbodata.get module)
-=======================================
+### 데이터 가져오기 (kbodata.get module)
 
-| 1. 원하는 날짜의 경기 스케쥴을 다운로드 받습니다.  
-| 1. you can download KBO match schedule that you want to get.
+원하는 날짜의 경기 스케쥴을 다운로드 받습니다.  
+you can download KBO match schedule that you want to get.
 
-.. code-block:: python
-
+```python
     import kbodata
 
     # 2021년 4월 20일의 KBO 경기 스케쥴을 가져옵니다.
@@ -37,13 +29,12 @@ How to Use
     # 2021년 KBO 경기 스케쥴을 가져옵니다. 
     # Get the KBO match schedule for 2021.
     >>> year = kbodata.get_yearly_schedule(2021,'chromedriver_path')
+```
 
+해당 스케쥴을 바탕으로 경기 정보를 JSON 형식으로 가져옵니다.  
+It will be broght match information in JSON format based on the schedule.  
 
-| 2. 해당 스케쥴을 바탕으로 경기 정보를 JSON 형식으로 가져옵니다.  
-| 2. It will be broght match information in JSON format based on the schedule.  
-
-.. code-block:: python
-
+```python
     # 2021년 4월 20일의 KBO 경기 정보를 가져옵니다.
     # Get the KBO match information for April 20, 2021.
     >>> day_data = kbodata.get_game_data(day,'chromedriver_path')
@@ -55,12 +46,12 @@ How to Use
     # 2021년 KBO 경기 정보를 가져옵니다. 
     # Get the KBO match information for 2021.
     >>> year_data = kbodata.get_game_data(year,'chromedriver_path')
+```
 
-| JSON 형식은 아래와 같습니다.
-| The JSON format is as below.
+JSON 형식은 아래와 같습니다.  
+The JSON format is as below.
 
-.. code-block:: bash
-
+```json
     { id: date_gameid,
     contents: {
       'scoreboard': []
@@ -71,18 +62,17 @@ How to Use
       'home_pitcher': []
         }
     }
+```
 
-데이터 변형하기 (kbodata.load module)
-=======================================
+## 데이터 변형하기 (kbodata.load module)
 
-| 가져온 데이터들을 특정 파일 타입으로 변환합니다. 지원하는 파일 타입은 아래와 같습니다.
-| This module converts data into specific file types. The supported file types are as follows.
-|
+가져온 데이터들을 특정 파일 타입으로 변환합니다. 지원하는 파일 타입은 아래와 같습니다.  
+This module converts data into specific file types. The supported file types are as follows.
+
 - DataFrame(pandas)
 - Dict
 
-.. code-block:: python
-
+```python
     # 팀 경기 정보만을 정리하여 DataFrame으로 변환합니다.
     scoreboard = kbodata.scoreboard_to_DataFrame(day_data)
     # 타자 정보만을 정리하여 DataFrame으로 변환합니다.
@@ -96,21 +86,20 @@ How to Use
     batter = kbodata.batter_to_Dict(day_data)
     # 투수 정보만을 정리하여 Dict으로 변환합니다.
     pitcher = kbodata.pitcher_to_Dict(day_data)
+```
 
-| 변환된 데이터에 대한 정보는 아래의 링크에서 확인할 수 있습니다.
-| You can find information about the converted data at the link below.
-|
+변환된 데이터에 대한 정보는 아래의 링크에서 확인할 수 있습니다.  
+You can find information about the converted data at the link below.
+
 - Scoreboard: https://github.com/Hyeonji-Ryu/kbo-data/blob/main/docs/scoreboard.md
 - Batter: https://github.com/Hyeonji-Ryu/kbo-data/blob/main/docs/batter.md
 - Pitcher: https://github.com/Hyeonji-Ryu/kbo-data/blob/main/docs/pitcher.md
 
----------------
-Issues
----------------
+## Issues
 
-| KBO 공식 홈페이지에 없는 데이터는 제공되지 않습니다. 데이터가 제공되지 않는 경기 정보는 아래와 같습니다.  
-| Data that is not on the KBO official website is not provided. Match information for which data is not provided are listed below.  
-| 
+KBO 공식 홈페이지에 없는 데이터는 제공되지 않습니다. 데이터가 제공되지 않는 경기 정보는 아래와 같습니다.  
+Data that is not on the KBO official website is not provided. Match information for which data is not provided are listed below.  
+
 - 2008-03-30 LTHH0
 - 2009-04-04 WOLT0
 - 2010-03-20 OBLT0

@@ -1,14 +1,16 @@
 [tool.poetry]
 name = "kbodata"
 version = "0.1.0"
-description = ""
+description = "Scraping Korea Baseball Game information"
 authors = ["Hyeonji-Ryu <guswl3940@gmail.com>"]
 license = "MIT"
-readme = "README.rst"
+readme = "README.md"
+repository = "https://github.com/Hyeonji-Ryu/kbo-data"
+documentation = "https://github.com/Hyeonji-Ryu/kbo-data/tree/main/docs"
 
 # Requirements
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.7.1"
 selenium = "^3.141.0"
 pandas = "^1.2.2"
 bs4 = "^0.0.1"
