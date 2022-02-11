@@ -31,7 +31,7 @@ def pitcher_modify(data):
             new_info['team'] = pitcher["팀"]
             new_info['mound'] = '1' if pitcher['등판'] == '선발' else '0'
             new_info['inning'] = change_inning(pitcher['이닝'])
-            new_info['result'] = '세이브' if pitcher['결과'] == '세' else pitcher['결과']
+            new_info['result'] = change_result(pitcher['결과'])
             new_info['strikeout'] = pitcher['삼진']
             new_info['dead4ball'] = pitcher['4사구']
             new_info['losescore'] = pitcher['실점']
@@ -66,3 +66,14 @@ def change_inning(data):
         return "0"+temp[-1][0]
     else:
         return temp[0] + temp[-1][0]
+
+def change_result(result):
+
+    if result == '세이브':
+        return "S"
+    elif result == "홀드":
+        return "H"
+    elif result == "승":
+        return "W"
+    else:
+        return "L"
