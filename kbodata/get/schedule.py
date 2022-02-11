@@ -26,6 +26,7 @@ def get_daily_schedule(year,month,day,Driver_path):
     options.add_argument("headless")
     options.add_argument("window-size=1920x1080")
     options.add_argument("disable-gpu")
+    options.add_argument("--log-level=2")
     driver = webdriver.Chrome(Driver_path, options=options)
     driver.implicitly_wait(100)
 
