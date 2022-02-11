@@ -60,7 +60,7 @@ It will be broght match information in JSON format based on the schedule.
 JSON 형식은 아래와 같습니다.  
 The JSON format is as below.
 
-```json
+```ini
     { id: date_gameid,
     contents: {
       'scoreboard': []
