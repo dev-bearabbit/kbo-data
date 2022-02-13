@@ -3,6 +3,10 @@
 kbo-data는 한국프로야구 경기정보를 스크래핑하는 파이썬 패키지입니다.  
 kbo-data is a Python package that provides Korean professional baseball game information by scraping.
 
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/kbodata)
+[![PyPI](https://img.shields.io/pypi/v/kbodata)](https://pypi.org/project/kbodata/)
+[![GitHub license](https://img.shields.io/github/license/Hyeonji-Ryu/kbo-data)](https://github.com/Hyeonji-Ryu/kbo-data/blob/main/LICENSE)
+
 ## Required
 
 이 패키지를 사용하기 위해서는 chrome driver가 필요합니다. chrome driver는 [해당 페이지](https://chromedriver.chromium.org/downloads)에서 다운로드할 수 있습니다.  
