@@ -10,7 +10,7 @@ CREATE TABLE pitcher(
     idx BIGINT(11) NOT NULL COMMENT "조합키(시합날짜+더블헤더+팀ID)",
     name VARCHAR(8) NOT NULL COMMENT "이름",
     team VARCHAR(4)  DEFAULT NULL COMMENT "팀이름",
-    sp TINYINT(1) DEFAULT NULL COMMENT "선발",
+    mound TINYINT(1) DEFAULT NULL COMMENT "선발",
     inning INT(3) DEFAULT NULL COMMENT "이닝",
     result VARCHAR(1) DEFAULT NULL COMMENT "결과",
     strikeout INT(2) DEFAULT NULL COMMENT "삼진",

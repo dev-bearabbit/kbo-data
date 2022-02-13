@@ -128,9 +128,32 @@ def add_gameid(result):
 def delete_non_provided_data(result):
     """경기정보가 제공되지 않은 스케쥴을 제거하는 함수
     """
-    not_provided = [("20080330","LTHH0"),("20090404","WOLT0"),("20100320","OBLT0"),("20100320","WOSS0"),("20150708","HTWO0"),("20180801","WOSK0")]
+    not_provided = [("20080330","LTHH0"),
+                    ("20090404","WOLT0"),
+                    ("20100320","OBLT0"),
+                    ("20100320","WOSS0"),
+                    ("20150708","HTWO0"),
+                    ("20180801","WOSK0")]
     for day, gameid in not_provided:
         idx = result[(result["date"]==day)&(result["gameid"]==gameid)].index
+        result = result.drop(idx)
+        result.reset_index(inplace=True,drop=True)
+
+    not_provided_for_day = ["20130309",
+                            "20130310",
+                            "20130311",
+                            "20130312",
+                            "20130313",
+                            "20130314",
+                            "20130315",
+                            "20130316",
+                            "20130317",
+                            "20130318",
+                            "20130319",
+                            "20130320",
+                            ]
+    for day in not_provided_for_day:
+        idx = result[(result["date"]==day)].index
         result = result.drop(idx)
         result.reset_index(inplace=True,drop=True)
 

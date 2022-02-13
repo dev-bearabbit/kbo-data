@@ -109,9 +109,26 @@ You can find information about the converted data at the link below.
 KBO 공식 홈페이지에 없는 데이터는 제공되지 않습니다. 데이터가 제공되지 않는 경기 정보는 아래와 같습니다.  
 Data that is not on the KBO official website is not provided. Match information for which data is not provided are listed below.  
 
+### 경기 기준 (from game)
+
 - 2008-03-30 LTHH0
 - 2009-04-04 WOLT0
 - 2010-03-20 OBLT0
 - 2010-03-20 WOSS0
 - 2015-07-08 HTWO0
 - 2018-08-01 WOSK0
+
+### 날짜 기준 (from date)
+
+- 2013-03-09
+- 2013-03-10
+- 2013-03-11
+- 2013-03-12
+- 2013-03-13
+- 2013-03-14
+- 2013-03-15
+- 2013-03-16
+- 2013-03-17
+- 2013-03-18
+- 2013-03-19
+- 2013-03-20
