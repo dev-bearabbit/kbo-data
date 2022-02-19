@@ -1,4 +1,4 @@
-__version__ = '0.1.0'
+__version__ = '0.1.3'
 
 from kbodata.get.schedule import(
     get_daily_schedule,
@@ -7,7 +7,6 @@ from kbodata.get.schedule import(
      )
 
 from kbodata.get.game import get_game_data
-
 from kbodata.load.scoreboard import scoreboard_to_DataFrame, scoreboard_to_Dict
 from kbodata.load.batter import batter_to_DataFrame, batter_to_Dict
 from kbodata.load.pitcher import pitcher_to_DataFrame, pitcher_to_Dict

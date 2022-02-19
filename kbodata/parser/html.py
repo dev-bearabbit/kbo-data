@@ -24,8 +24,12 @@ def looking_for_team_names(temp_teams):
     for team in temp_teams:
         temp_team = team.get_text()
         temp_team = temp_team.split(" ")
-        if (temp_team[0] in temp_team_list) == False:
-            temp_team_list.append(temp_team[0])
+        if len(temp_team[0]) == 0:
+            team_name = temp_team[1]
+        else:
+            team_name = temp_team[0]
+        if team_name not in temp_team_list:
+            temp_team_list.append(team_name)
 
     return (temp_team_list[0], temp_team_list[1])
 
