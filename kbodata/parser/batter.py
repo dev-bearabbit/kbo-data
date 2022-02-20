@@ -43,7 +43,7 @@ def batter_modify(data):
                 game_info["day"],
                 game_info["더블헤더"],
             )
-            new_info["name"] = batter["선수명"]
+            new_info["name"] = change_long_name(batter["선수명"])
             new_info["team"] = batter["팀"]
             new_info["position"] = change_position(batter["포지션"])
             new_info = add_ining(Batter_factor, new_info, batter)
@@ -142,3 +142,11 @@ def change_record(data):
     data = data.replace("二","2")
     data = data.replace("三","3")
     return data
+
+def change_long_name(name):
+    
+    full_names = {"페르난데":"페르난데스","해즐베이":"해즐베이커","스몰린스":"스몰린스키","반슬라이":"반슬라이크"}
+    if name in full_names.keys():
+        return  full_names[name]
+    else:
+        return name
