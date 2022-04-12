@@ -51,7 +51,7 @@ def scoreboard_modify(data):
         new_info["away"] = away
         new_info["dbheader"] = game_info["더블헤더"]
         new_info["place"] = etc_info["구장"]
-        new_info["audience"] = int(etc_info["관중"].replace(',',''))
+        new_info["audience"] = int(etc_info["관중"].replace(',','')) if len(etc_info["관중"]) > 0 else 0
         new_info["starttime"] =  etc_info["개시"]
         new_info["endtime"] =  etc_info["종료"]
         new_info["gametime"] =  etc_info["경기시간"]

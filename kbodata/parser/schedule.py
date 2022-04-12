@@ -1,6 +1,7 @@
 import os
 import configparser
 import pandas as pd
+from datetime import date
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -33,6 +34,9 @@ def parsing_monthly_schedule(year, month, driver):
             # 경기날짜 확인
             if li.get('class') == ['dayNum']:
                 day = str(year)+str(month).zfill(2) + info[0].zfill(2)
+                # 미래 경기정보는 제외
+                if date(year,month,int(info[0])) >= date.today():
+                    break
             # 나눔 경기는 제외
             elif info[0] in not_listed:
                 continue

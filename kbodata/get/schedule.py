@@ -32,6 +32,7 @@ def get_daily_schedule(year,month,day,Driver_path):
 
     if sd_date.year < 2008: return print("ERROR: This library only provides data since 2008.")
     if sd_date > date.today(): return print("ERROR: The end date is later than now.")
+    if sd_date == date.today(): return print("ERROR: Today's game info is not updated yet.")
     
     data = parsing_daily_schedule(year,month,day,driver)
     driver.quit()
@@ -78,7 +79,7 @@ def get_yearly_schedule(year, Driver_path):
     options.add_argument("disable-gpu")
     driver = webdriver.Chrome(Driver_path, options=options)
     driver.implicitly_wait(100)
-    
+
     with tqdm(desc="in progress",total=12) as pbar:
         while st_date < ed_date:
             data = parsing_monthly_schedule(st_date.year,st_date.month,driver)
