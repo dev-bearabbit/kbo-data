@@ -68,6 +68,7 @@ def parsing_daily_schedule(year,month,day,driver):
     # 스크래핑 된 데이터 정리
     table= BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
     result = []
+    not_listed = ["EAST", "WEST", "드림", "나눔"]
     for td in table.find_all("td"):
         if td.find("li",{"class":"dayNum"}).text != str(day):
             continue
@@ -76,6 +77,9 @@ def parsing_daily_schedule(year,month,day,driver):
             # 경기날짜 확인
             if li.get('class') == ['dayNum']:
                 day = str(year)+str(month).zfill(2) + info[0].zfill(2)
+            # 나눔 경기는 제외
+            elif info[0] in not_listed:
+                continue
             # 경기 취소 확인
             elif li.get('class') == ['rainCancel']:
                 status = "canceled"
