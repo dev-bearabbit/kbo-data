@@ -1,4 +1,4 @@
-__version__ = '0.1.7'
+__version__ = '0.2.0'
 
 from kbodata.get.schedule import(
     get_daily_schedule,
