@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kbodata"
-version = "0.2.0"
+version = "0.2.1"
 description = "Scraping Korea Baseball Game information"
 authors = ["Hyeonji-Ryu <dev.bearabbit@gmail.com>"]
 license = "MIT"
