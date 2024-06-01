@@ -2,13 +2,14 @@ from datetime import date
 from tqdm import tqdm
 from dateutil.relativedelta import relativedelta
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 import pandas as pd
 from kbodata.parser.schedule import parsing_daily_schedule, parsing_monthly_schedule
 
 def get_daily_schedule(year,month,day,Driver_path):
     """유저 함수: 2008년 이후 데이터 중에 요청된 날짜의 경기 스케쥴을 가져온다.
 
-    ex) get_daily_schedule("20210420","chromedriver")
+    ex) get_daily_schedule(2021,04,20,"chromedriver")
 
         status      date home away  dbheader gameid
     0	finished	20210420	HT	LG	0	HTLG0
@@ -27,12 +28,10 @@ def get_daily_schedule(year,month,day,Driver_path):
     options.add_argument("window-size=1920x1080")
     options.add_argument("disable-gpu")
     options.add_argument("--log-level=2")
-    driver = webdriver.Chrome(Driver_path, options=options)
+    driver = webdriver.Chrome(service=Service(executable_path=Driver_path) , options=options)
     driver.implicitly_wait(100)
 
     if sd_date.year < 2008: return print("ERROR: This library only provides data since 2008.")
-    if sd_date > date.today(): return print("ERROR: The end date is later than now.")
-    if sd_date == date.today(): return print("ERROR: Today's game info is not updated yet.")
     
     data = parsing_daily_schedule(year,month,day,driver)
     driver.quit()
@@ -46,13 +45,12 @@ def get_monthly_schedule(year, month, Driver_path):
     st_date = date(year,month,1)
     
     if st_date.year < 2008: return print("ERROR: This library only provides data since 2008.")
-    if st_date > date.today(): return print("ERROR: The date is later than now.")
 
     options = webdriver.ChromeOptions()
     options.add_argument("headless")
     options.add_argument("window-size=1920x1080")
     options.add_argument("disable-gpu")
-    driver = webdriver.Chrome(Driver_path, options=options)
+    driver = webdriver.Chrome(service=Service(executable_path=Driver_path) , options=options)
     driver.implicitly_wait(100)
 
     data = parsing_monthly_schedule(st_date.year,st_date.month,driver)
@@ -70,14 +68,12 @@ def get_yearly_schedule(year, Driver_path):
     ed_date = date(year,12,30)
     
     if st_date.year < 2008: return print("ERROR: This library only provides data since 2008.")
-    if ed_date.year > date.today().year : return print("ERROR: The end date is later than now.")
     
-    delta = relativedelta(ed_date, st_date)
     options = webdriver.ChromeOptions()
     options.add_argument("headless")
     options.add_argument("window-size=1920x1080")
     options.add_argument("disable-gpu")
-    driver = webdriver.Chrome(Driver_path, options=options)
+    driver = webdriver.Chrome(service=Service(executable_path=Driver_path) , options=options)
     driver.implicitly_wait(100)
 
     with tqdm(desc="in progress",total=12) as pbar:

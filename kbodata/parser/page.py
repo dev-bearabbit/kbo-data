@@ -1,7 +1,8 @@
-import ast
+import json
 import os
 import configparser
 from bs4 import BeautifulSoup
+import pandas as pd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -14,6 +15,20 @@ config = configparser.ConfigParser()
 # 필요한 변수 가져오기
 config.read(os.path.join(os.path.dirname(__file__),"config.ini"), encoding="utf-8")
 url = config["DEFAULT"]["KBO_URL"]
+
+def is_game_finished(gameDate, driver):
+    """오늘 경기가 완료되었는지 확인하는 함수
+    """
+    temp_url = url + gameDate
+    result = {}
+    driver.get(temp_url)
+    game_elements = WebDriverWait(driver, 100).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "game-cont")))
+    for element in game_elements:
+        data = BeautifulSoup(element.get_attribute('outerHTML'), "lxml").find('li', class_='game-cont')
+        game_id = data.get('g_id')[8:]
+        status = data.get('result_ck')
+        result[game_id] = status
+    return result
 
 
 def parsing_page(gameDate, gameId, driver):
@@ -57,7 +72,7 @@ def parsing_single_game(date, gameId, driver):
         gameld: 경기를 하는 팀명과 더블해더 유무를 이용해 만든 문자열
         "WOOB0"과 같이 만드는데, WO, OB는 각각 팀명을 의미하고
         0은 더블헤더 경기가 아닌 것을 알려준다.
-        만약 더불헤더 경기면 1차전은 "KTLT1"처럼 1로 표시하고
+        만약 더블헤더 경기면 1차전은 "KTLT1"처럼 1로 표시하고
         2차전이면 "KTLT2"으로 표시한다.
 
     Returns
@@ -75,19 +90,21 @@ def parsing_single_game(date, gameId, driver):
         - 'home_pitcher'
     """
 
+    pd.set_option('future.no_silent_downcasting', True)
+    
     temp_page = parsing_page(date, gameId, driver)
 
     temp_scoreboard = scoreboard(temp_page["tables"], temp_page["teams"])
 
     temp_all = {
-        "scoreboard": ast.literal_eval(temp_scoreboard.to_json(orient="records"))
+        "scoreboard": json.loads((temp_scoreboard.to_json(orient="records")))
     }
     temp_all.update(
-        {"ETC_info": etc_info(temp_page["tables"], temp_page["record_etc"])}
+        {"ETC_info": json.loads(json.dumps(etc_info(temp_page["tables"], temp_page["record_etc"])))}
     )
     temp_all.update(
         {
-            "away_batter": ast.literal_eval(
+            "away_batter": json.loads(
                 away_batter(temp_page["tables"], temp_page["teams"]).to_json(
                     orient="records"
                 )
@@ -96,7 +113,7 @@ def parsing_single_game(date, gameId, driver):
     )
     temp_all.update(
         {
-            "home_batter": ast.literal_eval(
+            "home_batter": json.loads(
                 home_batter(temp_page["tables"], temp_page["teams"]).to_json(
                     orient="records"
                 )
@@ -105,7 +122,7 @@ def parsing_single_game(date, gameId, driver):
     )
     temp_all.update(
         {
-            "away_pitcher": ast.literal_eval(
+            "away_pitcher": json.loads(
                 away_pitcher(temp_page["tables"], temp_page["teams"]).to_json(
                     orient="records"
                 )
@@ -114,7 +131,7 @@ def parsing_single_game(date, gameId, driver):
     )
     temp_all.update(
         {
-            "home_pitcher": ast.literal_eval(
+            "home_pitcher": json.loads(
                 home_pitcher(temp_page["tables"], temp_page["teams"]).to_json(
                     orient="records"
                 )

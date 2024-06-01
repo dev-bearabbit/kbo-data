@@ -1,5 +1,5 @@
 import pandas as pd
-
+from io import StringIO
 
 def looking_for_team_names(temp_teams):
     """ 모은 HTML soup에서 시합한 두 팀명을 뽑는 함수
@@ -33,16 +33,22 @@ def looking_for_team_names(temp_teams):
 
     return (temp_team_list[0], temp_team_list[1])
 
+def _read_html(table):
+    html_data = StringIO(table)
+    return pd.read_html(html_data)[0]
+
+
 def scoreboard(tables, teams):
-    temp_df_0 = pd.read_html(str(tables[0]))[0]
+    temp_df_0 = _read_html(str(tables[0]))
     temp_df_0 = temp_df_0.rename(columns={"Unnamed: 0": "승패"})
-    temp_df_1 = pd.read_html(str(tables[1]))[0]
-    temp_df_2 = pd.read_html(str(tables[2]))[0]
+    temp_df_1 = _read_html(str(tables[1]))
+    temp_df_2 = _read_html(str(tables[2]))
     temp_teams_df = pd.DataFrame({"팀": teams})
     temp_total = pd.concat(
         [temp_teams_df, temp_df_0["승패"], temp_df_1, temp_df_2], axis=1
     )
     return temp_total
+
 
 def etc_info(tables, record_etc):
     record = {}
@@ -76,11 +82,11 @@ def etc_info(tables, record_etc):
 
 
 def away_batter(tables, team):
-    temp1 = pd.read_html(str(tables[4]))[0].dropna()
+    temp1 = _read_html(str(tables[4])).dropna()
     temp1 = temp1.rename(columns={"Unnamed: 1": "포지션"})
     del temp1["Unnamed: 0"]
-    temp2 = pd.read_html(str(tables[5]))[0][:-1]
-    temp3 = pd.read_html(str(tables[6]))[0][:-1]
+    temp2 = _read_html(str(tables[5]))[:-1]
+    temp3 = _read_html(str(tables[6]))[:-1]
     away = pd.concat([temp1, temp2, temp3], axis=1)
     away["팀"] = team[0]
     away = away.fillna(0)
@@ -88,11 +94,11 @@ def away_batter(tables, team):
 
 
 def home_batter(tables, team):
-    temp1 = pd.read_html(str(tables[7]))[0].dropna()
+    temp1 = _read_html(str(tables[7])).dropna()
     temp1 = temp1.rename(columns={"Unnamed: 1": "포지션"})
     del temp1["Unnamed: 0"]
-    temp2 = pd.read_html(str(tables[8]))[0][:-1]
-    temp3 = pd.read_html(str(tables[9]))[0][:-1]
+    temp2 = _read_html(str(tables[8]))[:-1]
+    temp3 = _read_html(str(tables[9]))[:-1]
     home = pd.concat([temp1, temp2, temp3], axis=1)
     home["팀"] = team[1]
     home = home.fillna(0)
@@ -100,14 +106,14 @@ def home_batter(tables, team):
 
 
 def away_pitcher(tables, team):
-    away = pd.read_html(str(tables[10]))[0][:-1]
+    away = _read_html(str(tables[10]))[:-1]
     away["팀"] = team[0]
     away = away.fillna(0)
     return away
 
 
 def home_pitcher(tables, team):
-    home = pd.read_html(str(tables[11]))[0][:-1]
+    home = _read_html(str(tables[11]))[:-1]
     home["팀"] = team[1]
     home = home.fillna(0)
     return home

@@ -1,4 +1,4 @@
-import ast
+import json
 import os
 import re
 import configparser
@@ -54,7 +54,7 @@ def batter_modify(data):
             fin_batters.append(new_info)
 
         fin_batters = pd.DataFrame(fin_batters)
-        data["contents"][home_or_away] = ast.literal_eval(
+        data["contents"][home_or_away] = json.loads(
             fin_batters.to_json(orient="records")
         )
     i = i + 1

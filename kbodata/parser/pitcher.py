@@ -1,4 +1,4 @@
-import ast
+import json
 import pandas as pd
 from kbodata.parser.util import make_primary_key, get_game_info
 
@@ -44,7 +44,7 @@ def pitcher_modify(data):
             fin_pitchers.append(new_info)
 
         fin_pitchers= pd.DataFrame(fin_pitchers)
-        data["contents"][home_or_away] = ast.literal_eval(fin_pitchers.to_json(orient="records"))
+        data["contents"][home_or_away] = json.loads(fin_pitchers.to_json(orient="records"))
     i = i + 1
 
     return data
@@ -55,14 +55,14 @@ def change_inning(data):
 
     ### Examples:
         - '5' -> 50
-        - '2\\/3' -> 02
-    - '1 2\\/3' -> 12
+        - '2/3' -> 02
+        - '1 2/3' -> 12
     """
     temp = str(data).split()
     
-    if len(temp) == 1 and "\\" not in temp[0]:
+    if len(temp) == 1 and "/" not in temp[0]:
         return temp[0]+"0"
-    elif len(temp) == 1 and "\\" in temp[0]:
+    elif len(temp) == 1 and "/" in temp[0]:
         return "0"+temp[-1][0]
     else:
         return temp[0] + temp[-1][0]

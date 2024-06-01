@@ -10,13 +10,13 @@ documentation = "https://github.com/Hyeonji-Ryu/kbo-data/tree/main/docs"
 
 # Requirements
 [tool.poetry.dependencies]
-python = "^3.7.1"
-selenium = "^3.141.0"
-pandas = "^1.2.2"
-bs4 = "^0.0.1"
-lxml = "^4.6.2"
-requests = "^2.25.1"
-tqdm = "^4.61.1"
+python = "^3.9.0"
+selenium = "^4.21.0"
+pandas = "^2.2.2"
+bs4 = "^0.0.2"
+lxml = "^5.2.2"
+requests = "^2.31.0"
+tqdm = "^4.66.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

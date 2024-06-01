@@ -1,4 +1,5 @@
 import os
+import re
 import configparser
 import pandas as pd
 from datetime import date
@@ -18,8 +19,8 @@ info_url = config["DEFAULT"]["Game_info_URL"]
 def parsing_monthly_schedule(year, month, driver):
 
     driver.get(info_url)
-    driver.find_element_by_id("ddlYear").send_keys(str(year))
-    driver.find_element_by_id("ddlMonth").send_keys(str(month).zfill(2))
+    driver.find_element("id", "ddlYear").send_keys(str(year))
+    driver.find_element("id", "ddlMonth").send_keys(str(month).zfill(2))
     data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"tblSchedule")))
     # 스크래핑 된 데이터 정리
     table = BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
@@ -30,13 +31,12 @@ def parsing_monthly_schedule(year, month, driver):
         if len(td) == 1:
             continue
         for li in td.find_all("li"):
-            info = (li.text).split()
+            text = re.sub(r'\[.*?\]', '', li.text)
+            info = (text).split()
             # 경기날짜 확인
             if li.get('class') == ['dayNum']:
-                day = str(year)+str(month).zfill(2) + info[0].zfill(2)
-                # 미래 경기정보는 제외
-                if date(year,month,int(info[0])) >= date.today():
-                    break
+                day = int(info[0].zfill(2))
+                dt = str(year)+str(month).zfill(2) + info[0].zfill(2)
             # 나눔 경기는 제외
             elif info[0] in not_listed:
                 continue
@@ -45,12 +45,22 @@ def parsing_monthly_schedule(year, month, driver):
                 status = "canceled"
                 home = change_name_to_id(info[2],year)
                 away = change_name_to_id(info[0],year)
-                result.append([status,day,home,away])
+                result.append([status,dt,home,away])
+            elif (len(info) < 5) & (date(year,month,day) == date.today()):
+                status = "ongoing"
+                home = change_name_to_id(info[-1],year)
+                away = change_name_to_id(info[0],year)
+                result.append([status,dt,home,away])
+            elif (len(info) < 5) & (date(year,month,day) > date.today()):
+                status = "scheduled"
+                home = change_name_to_id(info[-1],year)
+                away = change_name_to_id(info[0],year)
+                result.append([status,dt,home,away])
             else:
                 status = "finished"
                 home = change_name_to_id(info[-1],year)
                 away = change_name_to_id(info[0],year)
-                result.append([status,day,home,away])
+                result.append([status,dt,home,away])
     result = pd.DataFrame(result, columns=["status","date","home","away"])
     result = add_gameid(result)
     result = delete_non_provided_data(result)
@@ -62,8 +72,8 @@ def parsing_daily_schedule(year,month,day,driver):
 
     # 스케쥴 데이터 스크래핑
     driver.get(info_url)
-    driver.find_element_by_id("ddlYear").send_keys(str(year))
-    driver.find_element_by_id("ddlMonth").send_keys(str(month).zfill(2))
+    driver.find_element("id", "ddlYear").send_keys(str(year))
+    driver.find_element("id", "ddlMonth").send_keys(str(month).zfill(2))
     data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"tblSchedule")))
     # 스크래핑 된 데이터 정리
     table= BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
@@ -73,10 +83,11 @@ def parsing_daily_schedule(year,month,day,driver):
         if td.find("li",{"class":"dayNum"}).text != str(day):
             continue
         for li in td.find_all("li"):
-            info = (li.text).split()
+            text = re.sub(r'\[.*?\]', '', li.text)
+            info = (text).split()
             # 경기날짜 확인
             if li.get('class') == ['dayNum']:
-                day = str(year)+str(month).zfill(2) + info[0].zfill(2)
+                dt = str(year)+str(month).zfill(2) + info[0].zfill(2)
             # 나눔 경기는 제외
             elif info[0] in not_listed:
                 continue
@@ -85,12 +96,22 @@ def parsing_daily_schedule(year,month,day,driver):
                 status = "canceled"
                 home = change_name_to_id(info[2],year)
                 away = change_name_to_id(info[0],year)
-                result.append([status,day,home,away])
+                result.append([status,dt,home,away])
+            elif (len(info) < 5) & (date(year,month,day) == date.today()):
+                status = "ongoing"
+                home = change_name_to_id(info[-1],year)
+                away = change_name_to_id(info[0],year)
+                result.append([status,dt,home,away])
+            elif (len(info) < 5) & (date(year,month,day) > date.today()):
+                status = "scheduled"
+                home = change_name_to_id(info[-1],year)
+                away = change_name_to_id(info[0],year)
+                result.append([status,dt,home,away])
             else:
                 status = "finished"
                 home = change_name_to_id(info[-1],year)
                 away = change_name_to_id(info[0],year)
-                result.append([status,day,home,away])
+                result.append([status,dt,home,away])
     result = pd.DataFrame(result, columns=["status","date","home","away"])
     result = add_gameid(result)
     result = delete_non_provided_data(result)
