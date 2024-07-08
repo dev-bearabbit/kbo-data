@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from kbodata.parser.util import change_name_to_id
 
 # 설정파일을 읽어오기 위해 configparser를 사용
@@ -19,8 +20,19 @@ info_url = config["DEFAULT"]["Game_info_URL"]
 def parsing_monthly_schedule(year, month, driver):
 
     driver.get(info_url)
-    driver.find_element("id", "ddlYear").send_keys(str(year))
-    driver.find_element("id", "ddlMonth").send_keys(str(month).zfill(2))
+
+    # 페이지가 완전히 로드될 때까지 대기
+    WebDriverWait(driver, 30).until(
+        lambda d: d.execute_script('return document.readyState') == 'complete'
+    )
+    try:
+        year_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ddlYear")))
+        year_element.send_keys(str(year)) 
+        month_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ddlMonth")))
+        month_element.send_keys(str(month).zfill(2))
+    except TimeoutException:
+        print("Unable to locate the element. The page may not have loaded completely.")
+
     data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"tblSchedule")))
     # 스크래핑 된 데이터 정리
     table = BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
@@ -72,8 +84,19 @@ def parsing_daily_schedule(year,month,day,driver):
 
     # 스케쥴 데이터 스크래핑
     driver.get(info_url)
-    driver.find_element("id", "ddlYear").send_keys(str(year))
-    driver.find_element("id", "ddlMonth").send_keys(str(month).zfill(2))
+
+    # 페이지가 완전히 로드될 때까지 대기
+    WebDriverWait(driver, 30).until(
+        lambda d: d.execute_script('return document.readyState') == 'complete'
+    )
+    try:
+        year_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ddlYear")))
+        year_element.send_keys(str(year)) 
+        month_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ddlMonth")))
+        month_element.send_keys(str(month).zfill(2))
+    except TimeoutException:
+        print("Unable to locate the element. The page may not have loaded completely.")
+
     data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"tblSchedule")))
     # 스크래핑 된 데이터 정리
     table= BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
