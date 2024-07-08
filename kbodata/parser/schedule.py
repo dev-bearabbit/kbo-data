@@ -203,6 +203,7 @@ def delete_non_provided_data(result):
                             "20130318",
                             "20130319",
                             "20130320",
+                            "20211031"
                             ]
     for day in not_provided_for_day:
         idx = result[(result["date"]==day)].index
@@ -210,3 +211,4 @@ def delete_non_provided_data(result):
         result.reset_index(inplace=True,drop=True)
 
     return result
+

@@ -22,6 +22,12 @@ def is_game_finished(gameDate, driver):
     temp_url = url + gameDate
     result = {}
     driver.get(temp_url)
+    
+    # 페이지가 완전히 로드될 때까지 대기
+    WebDriverWait(driver, 30).until(
+        lambda d: d.execute_script('return document.readyState') == 'complete'
+    )
+
     game_elements = WebDriverWait(driver, 100).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "game-cont")))
     for element in game_elements:
         data = BeautifulSoup(element.get_attribute('outerHTML'), "lxml").find('li', class_='game-cont')
@@ -34,6 +40,12 @@ def is_game_finished(gameDate, driver):
 def parsing_page(gameDate, gameId, driver):
     temp_url = url + gameDate + "&amp;gameId=" + gameDate + gameId + "&amp;section=REVIEW"
     driver.get(temp_url)
+
+    # 페이지가 완전히 로드될 때까지 대기
+    WebDriverWait(driver, 30).until(
+        lambda d: d.execute_script('return document.readyState') == 'complete'
+    )
+
     data = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.ID,"gameCenterContents")))
     soup = BeautifulSoup(data.get_attribute('innerHTML'), "lxml")
     tables = soup.find_all("table")
